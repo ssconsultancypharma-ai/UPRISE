@@ -1,0 +1,1559 @@
+<div class="request-form-section">
+                    <h2>🙋 Request Study Material</h2>
+                    <form id="requestForm" onsubmit="handleRequest(event)">
+                        <div class="form-group">
+                            <label for="reqClass">Class:</label>
+                            <select id="reqClass" required>
+                                <option value="">Select Class</option>
+                                <option value="9">Class 9</option>
+                                <option value="10">Class 10</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reqSubject">Subject:</label>
+                            <select id="reqSubject" required>
+                                <option value="">Select Subject</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="biology">Biology</option>
+                                <option value="social">Social Science</option>
+                                <option value="english">English</option>
+                                <option value="ai">Artificial Intelligence</option>
+                            </select>
+                        </div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Study Portal - Notes & Questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: #f5f5dc;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ff8c00;
+        }
+
+        h1 {
+            color: #ff8c00;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #1a1a1a;
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: #f5f5dc;
+            border: 2px solid #ff8c00;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: #1a1a1a;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+            background: #ff8c00;
+            color: #f5f5dc;
+        }
+
+        .tab-btn.active {
+            background: #ff8c00;
+            color: #f5f5dc;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .subject-card {
+            background: #f5f5dc;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            border: 2px solid #ff8c00;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.5);
+        }
+
+        .subject-card h3 {
+            color: #ff8c00;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subject-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff8c00, #ff6600);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f5f5dc;
+            font-size: 1.2em;
+        }
+
+        .content-list {
+            list-style: none;
+        }
+
+        .content-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #fff8e7;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ff8c00;
+        }
+
+        .content-item:hover {
+            background: #ffe4b5;
+            transform: translateX(5px);
+        }
+
+        .download-btn {
+            background: #ff8c00;
+            color: #f5f5dc;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #1a1a1a;
+        }
+
+        .upload-section {
+            background: #f5f5dc;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid #ff8c00;
+        }
+
+        .upload-section h2 {
+            color: #ff8c00;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ff8c00;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background: #fff8e7;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #ff8c00, #ff6600);
+            color: #f5f5dc;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            background: #1a1a1a;
+        }
+
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            color: #f5f5dc;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 140, 0, 0.2);
+            border-radius: 10px;
+            border: 2px solid #ff8c00;
+        }
+
+        .request-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .request-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .request-form-section, .requests-list-section {
+            background: #f5f5dc;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid #ff8c00;
+        }
+
+        .request-form-section h2, .requests-list-section h2 {
+            color: #ff8c00;
+            margin-bottom: 20px;
+        }
+
+        .requests-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .request-card {
+            background: #fff8e7;
+            border: 2px solid #ff8c00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .request-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .request-subject {
+            background: #ff8c00;
+            color: #f5f5dc;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .request-time {
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .request-card h4 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .request-card p {
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .request-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ff8c00;
+        }
+
+        .requester {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .help-btn {
+            background: #ff8c00;
+            color: #f5f5dc;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .help-btn:hover {
+            background: #1a1a1a;
+            transform: scale(1.05);
+        }
+
+        .help-form {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ff8c00;
+        }
+
+        .help-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ff8c00;
+            border-radius: 5px;
+            background: #fff8e7;
+        }
+
+        .submit-help-btn {
+            background: #ff8c00;
+            color: #f5f5dc;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .submit-help-btn:hover {
+            background: #1a1a1a;
+        }
+
+        .class-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .class-btn {
+            background: #f5f5dc;
+            border: 2px solid #ff8c00;
+            padding: 12px 35px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: #1a1a1a;
+        }
+
+        .class-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .class-btn.active {
+            background: #ff8c00;
+            color: #f5f5dc;
+        }
+
+        .class-heading {
+            color: #ff8c00;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .class-content {
+            animation: fadeIn 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 School Study Portal</h1>
+            <p class="tagline">Share Knowledge, Excel Together</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('notes')">📝 Notes</button>
+            <button class="tab-btn" onclick="showTab('questions')">❓ Important Questions</button>
+            <button class="tab-btn" onclick="showTab('requests')">🙋 Request & Help</button>
+            <button class="tab-btn" onclick="showTab('upload')">⬆️ Upload Content</button>
+        </div>
+
+        <div id="notes" class="content-section active">
+            <div class="class-selector">
+                <button class="class-btn active" onclick="showClass('notes', 9)">Class 9</button>
+                <button class="class-btn" onclick="showClass('notes', 10)">Class 10</button>
+            </div>
+
+            <div class="class-content" id="notes-class9">
+                <h2 class="class-heading">📚 Class 9 - Notes</h2>
+            <div class="class-content" id="notes-class10" style="display: none;">
+                <h2 class="class-heading">📚 Class 10 - Notes</h2>
+            <div class="class-content" id="questions-class10" style="display: none;">
+                <h2 class="class-heading">❓ Class 10 - Important Questions</h2>
+                <div class="subject-grid">
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Real Numbers - Board Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Math 10 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Quadratic - Previous Year</span>
+                                <button class="download-btn" onclick="downloadContent('Math 10 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Trigonometry - Practice Set</span>
+                                <button class="download-btn" onclick="downloadContent('Math 10 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🔬</span> Physics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Light - Numerical Problems</span>
+                                <button class="download-btn" onclick="downloadContent('Phy 10 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Electricity - Important Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Phy 10 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Magnetic Effects - Theory</span>
+                                <button class="download-btn" onclick="downloadContent('Phy 10 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Chemical Reactions - Board Q</span>
+                                <button class="download-btn" onclick="downloadContent('Chem 10 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Acids & Bases - Practice</span>
+                                <button class="download-btn" onclick="downloadContent('Chem 10 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Metals - Important Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Chem 10 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧬</span> Biology</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Life Processes - Diagrams</span>
+                                <button class="download-btn" onclick="downloadContent('Bio 10 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Control - Previous Year</span>
+                                <button class="download-btn" onclick="downloadContent('Bio 10 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Heredity - Board Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Bio 10 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Nationalism - Long Answer</span>
+                                <button class="download-btn" onclick="downloadContent('Social 10 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Resources - Map Work</span>
+                                <button class="download-btn" onclick="downloadContent('Social 10 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Power Sharing - Case Study</span>
+                                <button class="download-btn" onclick="downloadContent('Social 10 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📖</span> English</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>First Flight - Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Eng 10 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Footprints - Chapter Q&A</span>
+                                <button class="download-btn" onclick="downloadContent('Eng 10 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Letter Writing - Samples</span>
+                                <button class="download-btn" onclick="downloadContent('Eng 10 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>ML - Important Questions</span>
+                                <button class="download-btn" onclick="downloadContent('AI 10 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Neural Networks - MCQs</span>
+                                <button class="download-btn" onclick="downloadContent('AI 10 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>AI Applications - Practice</span>
+                                <button class="download-btn" onclick="downloadContent('AI 10 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Real Numbers</span>
+                                <button class="download-btn" onclick="downloadContent('Math Real Numbers')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Quadratic Equations</span>
+                                <button class="download-btn" onclick="downloadContent('Math Quadratic')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Trigonometry</span>
+                                <button class="download-btn" onclick="downloadContent('Math Trig')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🔬</span> Physics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Light - Reflection and Refraction</span>
+                                <button class="download-btn" onclick="downloadContent('Physics Light')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Electricity</span>
+                                <button class="download-btn" onclick="downloadContent('Physics Electricity')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Magnetic Effects of Current</span>
+                                <button class="download-btn" onclick="downloadContent('Physics Magnetic')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Chemical Reactions and Equations</span>
+                                <button class="download-btn" onclick="downloadContent('Chem Reactions')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Acids, Bases and Salts</span>
+                                <button class="download-btn" onclick="downloadContent('Chem Acids')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Metals and Non-metals</span>
+                                <button class="download-btn" onclick="downloadContent('Chem Metals')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧬</span> Biology</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Life Processes</span>
+                                <button class="download-btn" onclick="downloadContent('Bio Life')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Control and Coordination</span>
+                                <button class="download-btn" onclick="downloadContent('Bio Control')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Heredity and Evolution</span>
+                                <button class="download-btn" onclick="downloadContent('Bio Heredity')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Nationalism in India</span>
+                                <button class="download-btn" onclick="downloadContent('Social Nationalism')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Resources and Development</span>
+                                <button class="download-btn" onclick="downloadContent('Social Resources')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Power Sharing</span>
+                                <button class="download-btn" onclick="downloadContent('Social Power')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📖</span> English</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>First Flight - Prose & Poetry</span>
+                                <button class="download-btn" onclick="downloadContent('Eng First Flight')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Footprints Without Feet</span>
+                                <button class="download-btn" onclick="downloadContent('Eng Footprints')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Letter Writing & Grammar</span>
+                                <button class="download-btn" onclick="downloadContent('Eng Writing 10')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Machine Learning Fundamentals</span>
+                                <button class="download-btn" onclick="downloadContent('AI ML 10')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Neural Networks Basics</span>
+                                <button class="download-btn" onclick="downloadContent('AI Neural')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>AI Applications</span>
+                                <button class="download-btn" onclick="downloadContent('AI Apps')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Number Systems</span>
+                                <button class="download-btn" onclick="downloadContent('Math Number Systems')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Polynomials</span>
+                                <button class="download-btn" onclick="downloadContent('Math Polynomials')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Coordinate Geometry</span>
+                                <button class="download-btn" onclick="downloadContent('Math Coordinate')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🔬</span> Physics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Motion</span>
+                                <button class="download-btn" onclick="downloadContent('Physics Motion')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Force and Laws of Motion</span>
+                                <button class="download-btn" onclick="downloadContent('Physics Force')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Gravitation</span>
+                                <button class="download-btn" onclick="downloadContent('Physics Gravitation')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Matter in Our Surroundings</span>
+                                <button class="download-btn" onclick="downloadContent('Chem Matter')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Atoms and Molecules</span>
+                                <button class="download-btn" onclick="downloadContent('Chem Atoms')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Structure of Atom</span>
+                                <button class="download-btn" onclick="downloadContent('Chem Structure')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧬</span> Biology</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>The Fundamental Unit of Life</span>
+                                <button class="download-btn" onclick="downloadContent('Bio Cell')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Tissues</span>
+                                <button class="download-btn" onclick="downloadContent('Bio Tissues')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Diversity in Living Organisms</span>
+                                <button class="download-btn" onclick="downloadContent('Bio Diversity')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>The French Revolution</span>
+                                <button class="download-btn" onclick="downloadContent('Social French')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>India - Size and Location</span>
+                                <button class="download-btn" onclick="downloadContent('Social India')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>What is Democracy?</span>
+                                <button class="download-btn" onclick="downloadContent('Social Democracy')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📖</span> English</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Beehive - Prose</span>
+                                <button class="download-btn" onclick="downloadContent('Eng Beehive')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Moments - Stories</span>
+                                <button class="download-btn" onclick="downloadContent('Eng Moments')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Grammar Essentials</span>
+                                <button class="download-btn" onclick="downloadContent('Eng Grammar 9')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Introduction to AI</span>
+                                <button class="download-btn" onclick="downloadContent('AI Intro')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>AI Project Cycle</span>
+                                <button class="download-btn" onclick="downloadContent('AI Project')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Data Sciences</span>
+                                <button class="download-btn" onclick="downloadContent('AI Data')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="class-content" id="notes-class10" style="display: none;">
+                <h2 class="class-heading">📚 Class 10 - Notes</h2>
+                <div class="subject-grid">
+                <div class="subject-card">
+                    <h3><span class="subject-icon">📐</span> Mathematics</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Calculus - Chapter 1</span>
+                            <button class="download-btn" onclick="downloadContent('Math Calculus')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Algebra Formulas</span>
+                            <button class="download-btn" onclick="downloadContent('Math Algebra')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Trigonometry Notes</span>
+                            <button class="download-btn" onclick="downloadContent('Math Trig')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🔬</span> Physics</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Mechanics - Complete Notes</span>
+                            <button class="download-btn" onclick="downloadContent('Physics Mechanics')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Electromagnetism</span>
+                            <button class="download-btn" onclick="downloadContent('Physics EM')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Optics Summary</span>
+                            <button class="download-btn" onclick="downloadContent('Physics Optics')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🧪</span> Chemistry</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Organic Chemistry</span>
+                            <button class="download-btn" onclick="downloadContent('Chem Organic')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Chemical Reactions</span>
+                            <button class="download-btn" onclick="downloadContent('Chem Reactions')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Periodic Table Guide</span>
+                            <button class="download-btn" onclick="downloadContent('Chem Periodic')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🧬</span> Biology</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Cell Biology Notes</span>
+                            <button class="download-btn" onclick="downloadContent('Bio Cell')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Human Anatomy</span>
+                            <button class="download-btn" onclick="downloadContent('Bio Anatomy')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Genetics & Evolution</span>
+                            <button class="download-btn" onclick="downloadContent('Bio Genetics')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🌍</span> Social Science</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>History - World Wars</span>
+                            <button class="download-btn" onclick="downloadContent('Social History')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Geography - India</span>
+                            <button class="download-btn" onclick="downloadContent('Social Geo')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Civics - Constitution</span>
+                            <button class="download-btn" onclick="downloadContent('Social Civics')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">📖</span> English</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Grammar Rules</span>
+                            <button class="download-btn" onclick="downloadContent('Eng Grammar')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Literature Analysis</span>
+                            <button class="download-btn" onclick="downloadContent('Eng Literature')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Essay Writing Guide</span>
+                            <button class="download-btn" onclick="downloadContent('Eng Essay')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Machine Learning Basics</span>
+                            <button class="download-btn" onclick="downloadContent('AI ML')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Python for AI</span>
+                            <button class="download-btn" onclick="downloadContent('AI Python')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Neural Networks</span>
+                            <button class="download-btn" onclick="downloadContent('AI NN')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="questions" class="content-section">
+            <div class="class-selector">
+                <button class="class-btn active" onclick="showClass('questions', 9)">Class 9</button>
+                <button class="class-btn" onclick="showClass('questions', 10)">Class 10</button>
+            </div>
+
+            <div class="class-content" id="questions-class9">
+                <h2 class="class-heading">❓ Class 9 - Important Questions</h2>
+                <div class="subject-grid">
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Number Systems - Practice Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Math 9 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Polynomials - Important Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Math 9 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Geometry - Previous Year</span>
+                                <button class="download-btn" onclick="downloadContent('Math 9 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🔬</span> Physics</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Motion - Numerical Problems</span>
+                                <button class="download-btn" onclick="downloadContent('Phy 9 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Force - Theory Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Phy 9 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Gravitation - Practice Set</span>
+                                <button class="download-btn" onclick="downloadContent('Phy 9 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Matter - MCQs</span>
+                                <button class="download-btn" onclick="downloadContent('Chem 9 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Atoms - Important Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Chem 9 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Structure of Atom - Practice</span>
+                                <button class="download-btn" onclick="downloadContent('Chem 9 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🧬</span> Biology</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Cell - Diagram Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Bio 9 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Tissues - Short Answer</span>
+                                <button class="download-btn" onclick="downloadContent('Bio 9 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Diversity - Long Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Bio 9 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>French Revolution - Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Social 9 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Geography - Map Work</span>
+                                <button class="download-btn" onclick="downloadContent('Social 9 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Democracy - Case Studies</span>
+                                <button class="download-btn" onclick="downloadContent('Social 9 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">📖</span> English</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>Beehive - Chapter Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Eng 9 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Moments - Short Stories Q&A</span>
+                                <button class="download-btn" onclick="downloadContent('Eng 9 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Grammar - Practice Questions</span>
+                                <button class="download-btn" onclick="downloadContent('Eng 9 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="subject-card">
+                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
+                        <ul class="content-list">
+                            <li class="content-item">
+                                <span>AI Concepts - MCQs</span>
+                                <button class="download-btn" onclick="downloadContent('AI 9 Q1')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Project Cycle - Questions</span>
+                                <button class="download-btn" onclick="downloadContent('AI 9 Q2')">Download</button>
+                            </li>
+                            <li class="content-item">
+                                <span>Data Science - Practice</span>
+                                <button class="download-btn" onclick="downloadContent('AI 9 Q3')">Download</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="class-content" id="questions-class10" style="display: none;">
+                <h2 class="class-heading">❓ Class 10 - Important Questions</h2>
+                <div class="subject-grid">
+                <div class="subject-card">
+                    <h3><span class="subject-icon">📐</span> Mathematics</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Board Exam Important Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Math Board Q')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Previous Year Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Math PYQ')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Practice Problems Set 1</span>
+                            <button class="download-btn" onclick="downloadContent('Math Practice')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🔬</span> Physics</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Numerical Problems</span>
+                            <button class="download-btn" onclick="downloadContent('Physics Numerical')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Theory Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Physics Theory')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Diagram Based Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Physics Diagrams')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🧪</span> Chemistry</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Important Reactions</span>
+                            <button class="download-btn" onclick="downloadContent('Chem Reactions Q')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Exam Expected Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Chem Expected')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Practical Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Chem Practical')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🧬</span> Biology</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Diagram Based Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Bio Diagrams')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Previous Year Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Bio PYQ')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>NEET Important Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Bio NEET')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🌍</span> Social Science</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>History Long Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Social History Q')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Geography Map Work</span>
+                            <button class="download-btn" onclick="downloadContent('Social Geo Q')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Civics Case Studies</span>
+                            <button class="download-btn" onclick="downloadContent('Social Civics Q')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">📖</span> English</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>Comprehension Passages</span>
+                            <button class="download-btn" onclick="downloadContent('Eng Comprehension')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Literature Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Eng Lit Q')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Writing Section Questions</span>
+                            <button class="download-btn" onclick="downloadContent('Eng Writing')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="subject-card">
+                    <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
+                    <ul class="content-list">
+                        <li class="content-item">
+                            <span>AI Concepts MCQs</span>
+                            <button class="download-btn" onclick="downloadContent('AI MCQ')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Programming Questions</span>
+                            <button class="download-btn" onclick="downloadContent('AI Programming')">Download</button>
+                        </li>
+                        <li class="content-item">
+                            <span>Project Based Questions</span>
+                            <button class="download-btn" onclick="downloadContent('AI Projects')">Download</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="upload" class="content-section">
+            <div class="upload-section">
+                <h2>📤 Upload Study Material</h2>
+                <form id="uploadForm" onsubmit="handleUpload(event)">
+                    <div class="form-group">
+                        <label for="uploadClass">Class:</label>
+                        <select id="uploadClass" required>
+                            <option value="">Select Class</option>
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contentType">Content Type:</label>
+                        <select id="contentType" required>
+                            <option value="">Select Type</option>
+                            <option value="notes">Notes</option>
+                            <option value="questions">Important Questions</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject:</label>
+                        <select id="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="biology">Biology</option>
+                            <option value="social">Social Science</option>
+                            <option value="english">English</option>
+                            <option value="ai">Artificial Intelligence</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" placeholder="e.g., Chapter 5 - Thermodynamics" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea id="description" placeholder="Brief description of the content..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yourName">Your Name:</label>
+                        <input type="text" id="yourName" placeholder="Your name (optional)">
+                    </div>
+
+                    <button type="submit" class="submit-btn">Upload Content</button>
+                </form>
+                <div id="successMsg" class="success-msg">
+                    ✅ Content uploaded successfully! Thank you for contributing.
+                </div>
+            </div>
+        </div>
+
+        <div id="requests" class="content-section">
+            <div class="class-selector">
+                <button class="class-btn active" onclick="showClass('requests', 9)">Class 9</button>
+                <button class="class-btn" onclick="showClass('requests', 10)">Class 10</button>
+            </div>
+
+            <div class="class-content" id="requests-class9">
+                <h2 class="class-heading">🙋 Class 9 - Request & Help</h2>
+                <div class="request-container">
+                <div class="request-form-section">
+                    <h2>🙋 Request Study Material</h2>
+                    <form id="requestForm" onsubmit="handleRequest(event)">
+                        <div class="form-group">
+                            <label for="reqSubject">Subject:</label>
+                            <select id="reqSubject" required>
+                                <option value="">Select Subject</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="biology">Biology</option>
+                                <option value="social">Social Science</option>
+                                <option value="english">English</option>
+                                <option value="ai">Artificial Intelligence</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reqType">Request Type:</label>
+                            <select id="reqType" required>
+                                <option value="">Select Type</option>
+                                <option value="notes">Notes</option>
+                                <option value="questions">Important Questions</option>
+                                <option value="both">Both</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reqTopic">Topic/Chapter:</label>
+                            <input type="text" id="reqTopic" placeholder="e.g., Calculus Chapter 3" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reqDetails">Details:</label>
+                            <textarea id="reqDetails" placeholder="Describe what you're looking for..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reqName">Your Name:</label>
+                            <input type="text" id="reqName" placeholder="Your name" required>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Post Request</button>
+                    </form>
+                    <div id="requestSuccessMsg" class="success-msg">
+                        ✅ Request posted successfully! Students will help you soon.
+                    </div>
+                </div>
+
+                <div class="requests-list-section">
+                    <h2>📋 Active Requests</h2>
+                    <div class="requests-list" id="requestsList">
+                        <div class="request-card">
+                            <div class="request-header">
+                                <span class="request-subject">📐 Mathematics</span>
+                                <span class="request-time">2 hours ago</span>
+                            </div>
+                            <h4>Integration Techniques - Chapter 7</h4>
+                            <p>Need notes and practice questions on integration by parts and substitution method.</p>
+                            <div class="request-footer">
+                                <span class="requester">Requested by: Rahul S.</span>
+                                <button class="help-btn" onclick="showHelpForm(1)">💡 I Can Help</button>
+                            </div>
+                            <div class="help-form" id="helpForm1" style="display: none;">
+                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
+                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                    <input type="text" placeholder="Your name" style="flex: 1;">
+                                    <button class="submit-help-btn" onclick="submitHelp(1)">Send Help</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="request-card">
+                            <div class="request-header">
+                                <span class="request-subject">🔬 Physics</span>
+                                <span class="request-time">5 hours ago</span>
+                            </div>
+                            <h4>Electromagnetic Waves - Notes</h4>
+                            <p>Looking for detailed notes on electromagnetic spectrum and wave properties.</p>
+                            <div class="request-footer">
+                                <span class="requester">Requested by: Priya K.</span>
+                                <button class="help-btn" onclick="showHelpForm(2)">💡 I Can Help</button>
+                            </div>
+                            <div class="help-form" id="helpForm2" style="display: none;">
+                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
+                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                    <input type="text" placeholder="Your name" style="flex: 1;">
+                                    <button class="submit-help-btn" onclick="submitHelp(2)">Send Help</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="request-card">
+                            <div class="request-header">
+                                <span class="request-subject">🧪 Chemistry</span>
+                                <span class="request-time">1 day ago</span>
+                            </div>
+                            <h4>Organic Chemistry Reactions</h4>
+                            <p>Need important questions and reaction mechanisms for board exam preparation.</p>
+                            <div class="request-footer">
+                                <span class="requester">Requested by: Amit T.</span>
+                                <button class="help-btn" onclick="showHelpForm(3)">💡 I Can Help</button>
+                            </div>
+                            <div class="help-form" id="helpForm3" style="display: none;">
+                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
+                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                    <input type="text" placeholder="Your name" style="flex: 1;">
+                                    <button class="submit-help-btn" onclick="submitHelp(3)">Send Help</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="request-card">
+                            <div class="request-header">
+                                <span class="request-subject">📖 English</span>
+                                <span class="request-time">1 day ago</span>
+                            </div>
+                            <h4>Essay Writing Tips</h4>
+                            <p>Looking for essay writing formats and sample essays for board exams.</p>
+                            <div class="request-footer">
+                                <span class="requester">Requested by: Sneha M.</span>
+                                <button class="help-btn" onclick="showHelpForm(4)">💡 I Can Help</button>
+                            </div>
+                            <div class="help-form" id="helpForm4" style="display: none;">
+                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
+                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                    <input type="text" placeholder="Your name" style="flex: 1;">
+                                    <button class="submit-help-btn" onclick="submitHelp(4)">Send Help</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>💡 Together we learn, together we grow</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Made with ❤️ for students, by students</p>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const sections = document.querySelectorAll('.content-section');
+            const buttons = document.querySelectorAll('.tab-btn');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showClass(section, classNum) {
+            // Get all class buttons in the current section
+            const sectionElement = document.getElementById(section);
+            const classBtns = sectionElement.querySelectorAll('.class-btn');
+            const classContents = sectionElement.querySelectorAll('.class-content');
+            
+            // Remove active class from all buttons
+            classBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Hide all class contents
+            classContents.forEach(content => content.style.display = 'none');
+            
+            // Show selected class content
+            document.getElementById(section + '-class' + classNum).style.display = 'block';
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function downloadContent(contentName) {
+            alert('Download started for: ' + contentName + '\n\nNote: This is a demo. In a real application, the actual file would be downloaded here.');
+        }
+
+        function handleUpload(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('uploadForm');
+            const successMsg = document.getElementById('successMsg');
+            
+            successMsg.style.display = 'block';
+            form.reset();
+            
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+            
+            return false;
+        }
+
+        function handleRequest(event) {
+            event.preventDefault();
+            
+            const formId = event.target.id;
+            const successMsgId = formId === 'requestForm' ? 'requestSuccessMsg' : 'requestSuccessMsg10';
+            const form = document.getElementById(formId);
+            const successMsg = document.getElementById(successMsgId);
+            
+            successMsg.style.display = 'block';
+            form.reset();
+            
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+            
+            return false;
+        }
+
+        function showHelpForm(id) {
+            const helpForm = document.getElementById('helpForm' + id);
+            if (helpForm.style.display === 'none') {
+                helpForm.style.display = 'block';
+            } else {
+                helpForm.style.display = 'none';
+            }
+        }
+
+        function submitHelp(id) {
+            alert('Thank you for helping! Your response has been sent to the requester.');
+            document.getElementById('helpForm' + id).style.display = 'none';
+        }
+    </script>
+</body>
+</html>
