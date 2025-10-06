@@ -1,1559 +1,813 @@
-<div class="request-form-section">
-                    <h2>🙋 Request Study Material</h2>
-                    <form id="requestForm" onsubmit="handleRequest(event)">
-                        <div class="form-group">
-                            <label for="reqClass">Class:</label>
-                            <select id="reqClass" required>
-                                <option value="">Select Class</option>
-                                <option value="9">Class 9</option>
-                                <option value="10">Class 10</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reqSubject">Subject:</label>
-                            <select id="reqSubject" required>
-                                <option value="">Select Subject</option>
-                                <option value="mathematics">Mathematics</option>
-                                <option value="physics">Physics</option>
-                                <option value="chemistry">Chemistry</option>
-                                <option value="biology">Biology</option>
-                                <option value="social">Social Science</option>
-                                <option value="english">English</option>
-                                <option value="ai">Artificial Intelligence</option>
-                            </select>
-                        </div><!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Study Portal - Notes & Questions</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>School Study Portal — Enhanced</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Nu/..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        header {
-            background: #f5f5dc;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 3px solid #ff8c00;
-        }
+<style>
+  :root{
+    --bg-1: #1a1a1a;
+    --bg-2: #2d2d2d;
+    --card: #f5f5dc; /* beige */
+    --accent: #ff8c00; /* orange */
+    --accent-dark: #ff6600;
+    --muted: #666;
+    --glass: rgba(255,255,255,0.04);
+    --success: #d4edda;
+    --white: #f5f5dc;
+  }
 
-        h1 {
-            color: #ff8c00;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
+  /* Light theme overrides */
+  :root.light {
+    --bg-1: #fff8f0;
+    --bg-2: #fffaf5;
+    --card: #fff;
+    --glass: rgba(0,0,0,0.03);
+    --muted: #444;
+  }
 
-        .tagline {
-            color: #1a1a1a;
-            font-size: 1.1em;
-        }
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(135deg,var(--bg-1),var(--bg-2));
+    color: #111;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+  /* Sticky header */
+  header.app-header{
+    position: sticky;
+    top:0;
+    z-index:40;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:14px 20px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+    border-bottom: 1px solid rgba(255,140,0,0.08);
+    backdrop-filter: blur(6px);
+  }
 
-        .tab-btn {
-            background: #f5f5dc;
-            border: 2px solid #ff8c00;
-            padding: 15px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: all 0.3s;
-            color: #1a1a1a;
-        }
+  .brand {
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
 
-        .tab-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
-            background: #ff8c00;
-            color: #f5f5dc;
-        }
+  .logo {
+    width:48px;height:48px;border-radius:10px;
+    background: linear-gradient(135deg,var(--accent),var(--accent-dark));
+    display:flex;align-items:center;justify-content:center;color:var(--white);
+    font-weight:700;font-size:20px;box-shadow:0 6px 18px rgba(255,140,0,0.12);
+  }
 
-        .tab-btn.active {
-            background: #ff8c00;
-            color: #f5f5dc;
-        }
+  .title {
+    font-size:1.2rem;
+    font-weight:700;
+    color:var(--accent);
+  }
 
-        .content-section {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
+  .tagline {
+    font-size:0.85rem;color:var(--muted);
+  }
 
-        .content-section.active {
-            display: block;
-        }
+  .controls {
+    display:flex;gap:10px;align-items:center;
+  }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  button.icon-btn{
+    background:transparent;border:0;padding:8px;border-radius:8px;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  button.icon-btn:hover{ background:var(--glass); }
 
-        .subject-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+  .searchbar {
+    width:100%;
+    max-width:700px;
+    margin:14px auto 22px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
 
-        .subject-card {
-            background: #f5f5dc;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s;
-            border: 2px solid #ff8c00;
-        }
+  .searchbar input{
+    width:100%;
+    padding:12px 16px;
+    border-radius:12px;
+    border:2px solid rgba(255,140,0,0.15);
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+    font-size:0.95rem;
+  }
 
-        .subject-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.5);
-        }
+  .container{
+    max-width:1200px;margin:0 auto;padding:18px;
+  }
 
-        .subject-card h3 {
-            color: #ff8c00;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+  .class-selector-main{
+    display:flex;gap:10px;justify-content:center;margin:10px 0 20px;
+  }
 
-        .subject-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #ff8c00, #ff6600);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #f5f5dc;
-            font-size: 1.2em;
-        }
+  .main-class-btn{ background:var(--card); border:2px solid var(--accent); padding:12px 20px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--accent); }
+  .main-class-btn.active{ background:var(--accent); color:var(--white); box-shadow: 0 8px 30px rgba(255,140,0,0.12); transform:translateY(-3px); }
 
-        .content-list {
-            list-style: none;
-        }
+  .layout{
+    display:grid;
+    grid-template-columns: 1fr 360px;
+    gap:24px;
+    align-items:start;
+  }
 
-        .content-item {
-            padding: 12px;
-            margin: 8px 0;
-            background: #fff8e7;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #ff8c00;
-        }
+  @media(max-width:980px){
+    .layout{ grid-template-columns: 1fr; padding:0 10px; }
+    .sidebar { order:2; }
+  }
 
-        .content-item:hover {
-            background: #ffe4b5;
-            transform: translateX(5px);
-        }
+  /* cards & grid */
+  .subject-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+  }
 
-        .download-btn {
-            background: #ff8c00;
-            color: #f5f5dc;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s;
-        }
+  .subject-card{
+    background:var(--card);
+    border-radius:14px;
+    padding:18px;
+    border:2px solid var(--accent);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.15);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
 
-        .download-btn:hover {
-            background: #1a1a1a;
-        }
+  .subject-card:hover{ transform: translateY(-6px); box-shadow: 0 14px 40px rgba(255,140,0,0.12); }
 
-        .upload-section {
-            background: #f5f5dc;
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            border: 2px solid #ff8c00;
-        }
+  .subject-card h3{ display:flex; gap:10px; align-items:center; font-size:1.05rem; color:var(--accent); margin:0 0 12px; }
+  .subject-icon{ width:40px;height:40px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); font-weight:700; }
 
-        .upload-section h2 {
-            color: #ff8c00;
-            margin-bottom: 20px;
-        }
+  .content-list{ list-style:none;padding:0;margin:0; display:flex;flex-direction:column; gap:8px; }
+  .content-item{
+    padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff8e7,#fff4db);
+    display:flex;justify-content:space-between;align-items:center;border:1px solid var(--accent);
+    transition: all .18s ease;
+  }
+  .content-item:hover{ transform: translateX(6px); }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+  .download-btn{ background:var(--accent); color:var(--white); border:0;padding:8px 12px;border-radius:8px; cursor:pointer; font-weight:600; }
+  .download-btn:hover{ opacity:0.95; }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #1a1a1a;
-            font-weight: bold;
-        }
+  /* upload/request UI improvements */
+  .upload-section,.request-form-section,.requests-list-section{
+    background:var(--card); padding:16px;border-radius:12px;border:2px solid var(--accent); box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ff8c00;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-            background: #fff8e7;
-        }
+  label{ font-weight:600;color:var(--muted); display:block;margin-bottom:6px; }
+  input,select,textarea{ width:100%; padding:10px;border-radius:8px;border:2px solid var(--accent); background:#fff8e7; font-size:0.95rem; }
+  textarea{ min-height:90px; resize:vertical; }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #1a1a1a;
-            background: white;
-        }
+  .submit-btn{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); border:0;padding:10px 16px;border-radius:10px; cursor:pointer; font-weight:700; }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
+  .success-msg{ display:none; padding:10px;border-radius:8px;background:var(--success); color:#155724;border:1px solid rgba(21,87,36,0.08); margin-top:10px; }
 
-        .submit-btn {
-            background: linear-gradient(135deg, #ff8c00, #ff6600);
-            color: #f5f5dc;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: transform 0.3s;
-        }
+  /* sidebar */
+  .sidebar{ display:flex; flex-direction:column; gap:14px; position:sticky; top:84px; align-self:start; }
 
-        .submit-btn:hover {
-            transform: scale(1.05);
-            background: #1a1a1a;
-        }
+  .card-mini{ padding:12px;border-radius:12px;background:linear-gradient(90deg,var(--card),#fffaf0); border:2px solid rgba(255,140,0,0.12); }
 
-        .success-msg {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-        }
+  .requests-list{ max-height:420px; overflow:auto; display:flex;flex-direction:column; gap:12px; }
 
-        footer {
-            text-align: center;
-            color: #f5f5dc;
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(255, 140, 0, 0.2);
-            border-radius: 10px;
-            border: 2px solid #ff8c00;
-        }
+  .request-card{ background:#fff8e7; padding:12px;border-radius:10px;border:1px solid var(--accent); }
 
-        .request-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
+  .chip{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:var(--accent); color:var(--white); font-weight:700; }
 
-        @media (max-width: 768px) {
-            .request-container {
-                grid-template-columns: 1fr;
-            }
-        }
+  /* chatbot */
+  .chat-toggle{
+    position:fixed; right:22px; bottom:22px; z-index:80; display:flex; flex-direction:column; gap:10px;
+  }
+  .chat-btn{
+    width:64px;height:64px;border-radius:14px;border:0;background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); font-size:20px; cursor:pointer; box-shadow:0 20px 50px rgba(255,140,0,0.18);
+  }
+  .chat-window{
+    width:340px; max-width:92vw; height:460px; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.3);
+    background:linear-gradient(180deg,var(--card),#fffaf0); display:flex; flex-direction:column; border:2px solid var(--accent);
+  }
+  .chat-header{ padding:12px 14px; display:flex; gap:12px; align-items:center; border-bottom:1px solid rgba(255,140,0,0.12); }
+  .chat-messages{ flex:1; padding:12px; overflow:auto; display:flex; flex-direction:column; gap:10px; }
+  .chat-input{ padding:10px; border-top:1px solid rgba(255,140,0,0.06); display:flex; gap:8px; }
+  .msg{ max-width:80%; padding:10px 12px; border-radius:10px; font-size:0.95rem; line-height:1.3; }
+  .msg.bot{ background:#fff; align-self:flex-start; border:1px solid rgba(0,0,0,0.05); }
+  .msg.user{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); align-self:flex-end; }
 
-        .request-form-section, .requests-list-section {
-            background: #f5f5dc;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            border: 2px solid #ff8c00;
-        }
+  /* subtle animations */
+  .fade-in{ animation:fadeIn .35s ease both; }
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  .small{ font-size:0.85rem; color:var(--muted); }
 
-        .request-form-section h2, .requests-list-section h2 {
-            color: #ff8c00;
-            margin-bottom: 20px;
-        }
-
-        .requests-list {
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        .request-card {
-            background: #fff8e7;
-            border: 2px solid #ff8c00;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-
-        .request-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
-        }
-
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .request-subject {
-            background: #ff8c00;
-            color: #f5f5dc;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        .request-time {
-            color: #666;
-            font-size: 0.85em;
-        }
-
-        .request-card h4 {
-            color: #1a1a1a;
-            margin-bottom: 10px;
-        }
-
-        .request-card p {
-            color: #333;
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-
-        .request-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #ff8c00;
-        }
-
-        .requester {
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .help-btn {
-            background: #ff8c00;
-            color: #f5f5dc;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .help-btn:hover {
-            background: #1a1a1a;
-            transform: scale(1.05);
-        }
-
-        .help-form {
-            margin-top: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border: 2px solid #ff8c00;
-        }
-
-        .help-form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ff8c00;
-            border-radius: 5px;
-            background: #fff8e7;
-        }
-
-        .submit-help-btn {
-            background: #ff8c00;
-            color: #f5f5dc;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .submit-help-btn:hover {
-            background: #1a1a1a;
-        }
-
-        .class-selector {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .class-btn {
-            background: #f5f5dc;
-            border: 2px solid #ff8c00;
-            padding: 12px 35px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: all 0.3s;
-            color: #1a1a1a;
-        }
-
-        .class-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
-        }
-
-        .class-btn.active {
-            background: #ff8c00;
-            color: #f5f5dc;
-        }
-
-        .class-heading {
-            color: #ff8c00;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2em;
-        }
-
-        .class-content {
-            animation: fadeIn 0.5s;
-        }
-    </style>
+  footer{ text-align:center; margin:30px 0 10px; color:var(--muted); font-size:0.9rem; }
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>📚 School Study Portal</h1>
-            <p class="tagline">Share Knowledge, Excel Together</p>
-        </header>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('notes')">📝 Notes</button>
-            <button class="tab-btn" onclick="showTab('questions')">❓ Important Questions</button>
-            <button class="tab-btn" onclick="showTab('requests')">🙋 Request & Help</button>
-            <button class="tab-btn" onclick="showTab('upload')">⬆️ Upload Content</button>
-        </div>
-
-        <div id="notes" class="content-section active">
-            <div class="class-selector">
-                <button class="class-btn active" onclick="showClass('notes', 9)">Class 9</button>
-                <button class="class-btn" onclick="showClass('notes', 10)">Class 10</button>
-            </div>
-
-            <div class="class-content" id="notes-class9">
-                <h2 class="class-heading">📚 Class 9 - Notes</h2>
-            <div class="class-content" id="notes-class10" style="display: none;">
-                <h2 class="class-heading">📚 Class 10 - Notes</h2>
-            <div class="class-content" id="questions-class10" style="display: none;">
-                <h2 class="class-heading">❓ Class 10 - Important Questions</h2>
-                <div class="subject-grid">
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Real Numbers - Board Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Math 10 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Quadratic - Previous Year</span>
-                                <button class="download-btn" onclick="downloadContent('Math 10 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Trigonometry - Practice Set</span>
-                                <button class="download-btn" onclick="downloadContent('Math 10 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🔬</span> Physics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Light - Numerical Problems</span>
-                                <button class="download-btn" onclick="downloadContent('Phy 10 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Electricity - Important Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Phy 10 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Magnetic Effects - Theory</span>
-                                <button class="download-btn" onclick="downloadContent('Phy 10 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Chemical Reactions - Board Q</span>
-                                <button class="download-btn" onclick="downloadContent('Chem 10 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Acids & Bases - Practice</span>
-                                <button class="download-btn" onclick="downloadContent('Chem 10 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Metals - Important Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Chem 10 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧬</span> Biology</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Life Processes - Diagrams</span>
-                                <button class="download-btn" onclick="downloadContent('Bio 10 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Control - Previous Year</span>
-                                <button class="download-btn" onclick="downloadContent('Bio 10 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Heredity - Board Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Bio 10 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Nationalism - Long Answer</span>
-                                <button class="download-btn" onclick="downloadContent('Social 10 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Resources - Map Work</span>
-                                <button class="download-btn" onclick="downloadContent('Social 10 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Power Sharing - Case Study</span>
-                                <button class="download-btn" onclick="downloadContent('Social 10 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📖</span> English</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>First Flight - Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Eng 10 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Footprints - Chapter Q&A</span>
-                                <button class="download-btn" onclick="downloadContent('Eng 10 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Letter Writing - Samples</span>
-                                <button class="download-btn" onclick="downloadContent('Eng 10 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>ML - Important Questions</span>
-                                <button class="download-btn" onclick="downloadContent('AI 10 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Neural Networks - MCQs</span>
-                                <button class="download-btn" onclick="downloadContent('AI 10 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>AI Applications - Practice</span>
-                                <button class="download-btn" onclick="downloadContent('AI 10 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Real Numbers</span>
-                                <button class="download-btn" onclick="downloadContent('Math Real Numbers')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Quadratic Equations</span>
-                                <button class="download-btn" onclick="downloadContent('Math Quadratic')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Trigonometry</span>
-                                <button class="download-btn" onclick="downloadContent('Math Trig')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🔬</span> Physics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Light - Reflection and Refraction</span>
-                                <button class="download-btn" onclick="downloadContent('Physics Light')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Electricity</span>
-                                <button class="download-btn" onclick="downloadContent('Physics Electricity')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Magnetic Effects of Current</span>
-                                <button class="download-btn" onclick="downloadContent('Physics Magnetic')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Chemical Reactions and Equations</span>
-                                <button class="download-btn" onclick="downloadContent('Chem Reactions')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Acids, Bases and Salts</span>
-                                <button class="download-btn" onclick="downloadContent('Chem Acids')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Metals and Non-metals</span>
-                                <button class="download-btn" onclick="downloadContent('Chem Metals')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧬</span> Biology</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Life Processes</span>
-                                <button class="download-btn" onclick="downloadContent('Bio Life')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Control and Coordination</span>
-                                <button class="download-btn" onclick="downloadContent('Bio Control')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Heredity and Evolution</span>
-                                <button class="download-btn" onclick="downloadContent('Bio Heredity')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Nationalism in India</span>
-                                <button class="download-btn" onclick="downloadContent('Social Nationalism')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Resources and Development</span>
-                                <button class="download-btn" onclick="downloadContent('Social Resources')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Power Sharing</span>
-                                <button class="download-btn" onclick="downloadContent('Social Power')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📖</span> English</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>First Flight - Prose & Poetry</span>
-                                <button class="download-btn" onclick="downloadContent('Eng First Flight')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Footprints Without Feet</span>
-                                <button class="download-btn" onclick="downloadContent('Eng Footprints')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Letter Writing & Grammar</span>
-                                <button class="download-btn" onclick="downloadContent('Eng Writing 10')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Machine Learning Fundamentals</span>
-                                <button class="download-btn" onclick="downloadContent('AI ML 10')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Neural Networks Basics</span>
-                                <button class="download-btn" onclick="downloadContent('AI Neural')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>AI Applications</span>
-                                <button class="download-btn" onclick="downloadContent('AI Apps')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Number Systems</span>
-                                <button class="download-btn" onclick="downloadContent('Math Number Systems')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Polynomials</span>
-                                <button class="download-btn" onclick="downloadContent('Math Polynomials')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Coordinate Geometry</span>
-                                <button class="download-btn" onclick="downloadContent('Math Coordinate')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🔬</span> Physics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Motion</span>
-                                <button class="download-btn" onclick="downloadContent('Physics Motion')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Force and Laws of Motion</span>
-                                <button class="download-btn" onclick="downloadContent('Physics Force')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Gravitation</span>
-                                <button class="download-btn" onclick="downloadContent('Physics Gravitation')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Matter in Our Surroundings</span>
-                                <button class="download-btn" onclick="downloadContent('Chem Matter')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Atoms and Molecules</span>
-                                <button class="download-btn" onclick="downloadContent('Chem Atoms')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Structure of Atom</span>
-                                <button class="download-btn" onclick="downloadContent('Chem Structure')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧬</span> Biology</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>The Fundamental Unit of Life</span>
-                                <button class="download-btn" onclick="downloadContent('Bio Cell')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Tissues</span>
-                                <button class="download-btn" onclick="downloadContent('Bio Tissues')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Diversity in Living Organisms</span>
-                                <button class="download-btn" onclick="downloadContent('Bio Diversity')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>The French Revolution</span>
-                                <button class="download-btn" onclick="downloadContent('Social French')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>India - Size and Location</span>
-                                <button class="download-btn" onclick="downloadContent('Social India')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>What is Democracy?</span>
-                                <button class="download-btn" onclick="downloadContent('Social Democracy')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📖</span> English</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Beehive - Prose</span>
-                                <button class="download-btn" onclick="downloadContent('Eng Beehive')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Moments - Stories</span>
-                                <button class="download-btn" onclick="downloadContent('Eng Moments')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Grammar Essentials</span>
-                                <button class="download-btn" onclick="downloadContent('Eng Grammar 9')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Introduction to AI</span>
-                                <button class="download-btn" onclick="downloadContent('AI Intro')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>AI Project Cycle</span>
-                                <button class="download-btn" onclick="downloadContent('AI Project')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Data Sciences</span>
-                                <button class="download-btn" onclick="downloadContent('AI Data')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="class-content" id="notes-class10" style="display: none;">
-                <h2 class="class-heading">📚 Class 10 - Notes</h2>
-                <div class="subject-grid">
-                <div class="subject-card">
-                    <h3><span class="subject-icon">📐</span> Mathematics</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Calculus - Chapter 1</span>
-                            <button class="download-btn" onclick="downloadContent('Math Calculus')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Algebra Formulas</span>
-                            <button class="download-btn" onclick="downloadContent('Math Algebra')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Trigonometry Notes</span>
-                            <button class="download-btn" onclick="downloadContent('Math Trig')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🔬</span> Physics</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Mechanics - Complete Notes</span>
-                            <button class="download-btn" onclick="downloadContent('Physics Mechanics')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Electromagnetism</span>
-                            <button class="download-btn" onclick="downloadContent('Physics EM')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Optics Summary</span>
-                            <button class="download-btn" onclick="downloadContent('Physics Optics')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🧪</span> Chemistry</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Organic Chemistry</span>
-                            <button class="download-btn" onclick="downloadContent('Chem Organic')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Chemical Reactions</span>
-                            <button class="download-btn" onclick="downloadContent('Chem Reactions')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Periodic Table Guide</span>
-                            <button class="download-btn" onclick="downloadContent('Chem Periodic')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🧬</span> Biology</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Cell Biology Notes</span>
-                            <button class="download-btn" onclick="downloadContent('Bio Cell')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Human Anatomy</span>
-                            <button class="download-btn" onclick="downloadContent('Bio Anatomy')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Genetics & Evolution</span>
-                            <button class="download-btn" onclick="downloadContent('Bio Genetics')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🌍</span> Social Science</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>History - World Wars</span>
-                            <button class="download-btn" onclick="downloadContent('Social History')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Geography - India</span>
-                            <button class="download-btn" onclick="downloadContent('Social Geo')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Civics - Constitution</span>
-                            <button class="download-btn" onclick="downloadContent('Social Civics')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">📖</span> English</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Grammar Rules</span>
-                            <button class="download-btn" onclick="downloadContent('Eng Grammar')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Literature Analysis</span>
-                            <button class="download-btn" onclick="downloadContent('Eng Literature')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Essay Writing Guide</span>
-                            <button class="download-btn" onclick="downloadContent('Eng Essay')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Machine Learning Basics</span>
-                            <button class="download-btn" onclick="downloadContent('AI ML')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Python for AI</span>
-                            <button class="download-btn" onclick="downloadContent('AI Python')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Neural Networks</span>
-                            <button class="download-btn" onclick="downloadContent('AI NN')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="questions" class="content-section">
-            <div class="class-selector">
-                <button class="class-btn active" onclick="showClass('questions', 9)">Class 9</button>
-                <button class="class-btn" onclick="showClass('questions', 10)">Class 10</button>
-            </div>
-
-            <div class="class-content" id="questions-class9">
-                <h2 class="class-heading">❓ Class 9 - Important Questions</h2>
-                <div class="subject-grid">
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📐</span> Mathematics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Number Systems - Practice Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Math 9 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Polynomials - Important Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Math 9 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Geometry - Previous Year</span>
-                                <button class="download-btn" onclick="downloadContent('Math 9 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🔬</span> Physics</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Motion - Numerical Problems</span>
-                                <button class="download-btn" onclick="downloadContent('Phy 9 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Force - Theory Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Phy 9 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Gravitation - Practice Set</span>
-                                <button class="download-btn" onclick="downloadContent('Phy 9 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧪</span> Chemistry</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Matter - MCQs</span>
-                                <button class="download-btn" onclick="downloadContent('Chem 9 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Atoms - Important Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Chem 9 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Structure of Atom - Practice</span>
-                                <button class="download-btn" onclick="downloadContent('Chem 9 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🧬</span> Biology</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Cell - Diagram Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Bio 9 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Tissues - Short Answer</span>
-                                <button class="download-btn" onclick="downloadContent('Bio 9 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Diversity - Long Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Bio 9 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🌍</span> Social Science</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>French Revolution - Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Social 9 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Geography - Map Work</span>
-                                <button class="download-btn" onclick="downloadContent('Social 9 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Democracy - Case Studies</span>
-                                <button class="download-btn" onclick="downloadContent('Social 9 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">📖</span> English</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>Beehive - Chapter Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Eng 9 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Moments - Short Stories Q&A</span>
-                                <button class="download-btn" onclick="downloadContent('Eng 9 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Grammar - Practice Questions</span>
-                                <button class="download-btn" onclick="downloadContent('Eng 9 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="subject-card">
-                        <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
-                        <ul class="content-list">
-                            <li class="content-item">
-                                <span>AI Concepts - MCQs</span>
-                                <button class="download-btn" onclick="downloadContent('AI 9 Q1')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Project Cycle - Questions</span>
-                                <button class="download-btn" onclick="downloadContent('AI 9 Q2')">Download</button>
-                            </li>
-                            <li class="content-item">
-                                <span>Data Science - Practice</span>
-                                <button class="download-btn" onclick="downloadContent('AI 9 Q3')">Download</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="class-content" id="questions-class10" style="display: none;">
-                <h2 class="class-heading">❓ Class 10 - Important Questions</h2>
-                <div class="subject-grid">
-                <div class="subject-card">
-                    <h3><span class="subject-icon">📐</span> Mathematics</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Board Exam Important Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Math Board Q')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Previous Year Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Math PYQ')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Practice Problems Set 1</span>
-                            <button class="download-btn" onclick="downloadContent('Math Practice')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🔬</span> Physics</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Numerical Problems</span>
-                            <button class="download-btn" onclick="downloadContent('Physics Numerical')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Theory Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Physics Theory')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Diagram Based Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Physics Diagrams')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🧪</span> Chemistry</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Important Reactions</span>
-                            <button class="download-btn" onclick="downloadContent('Chem Reactions Q')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Exam Expected Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Chem Expected')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Practical Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Chem Practical')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🧬</span> Biology</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Diagram Based Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Bio Diagrams')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Previous Year Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Bio PYQ')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>NEET Important Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Bio NEET')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🌍</span> Social Science</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>History Long Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Social History Q')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Geography Map Work</span>
-                            <button class="download-btn" onclick="downloadContent('Social Geo Q')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Civics Case Studies</span>
-                            <button class="download-btn" onclick="downloadContent('Social Civics Q')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">📖</span> English</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>Comprehension Passages</span>
-                            <button class="download-btn" onclick="downloadContent('Eng Comprehension')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Literature Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Eng Lit Q')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Writing Section Questions</span>
-                            <button class="download-btn" onclick="downloadContent('Eng Writing')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="subject-card">
-                    <h3><span class="subject-icon">🤖</span> Artificial Intelligence</h3>
-                    <ul class="content-list">
-                        <li class="content-item">
-                            <span>AI Concepts MCQs</span>
-                            <button class="download-btn" onclick="downloadContent('AI MCQ')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Programming Questions</span>
-                            <button class="download-btn" onclick="downloadContent('AI Programming')">Download</button>
-                        </li>
-                        <li class="content-item">
-                            <span>Project Based Questions</span>
-                            <button class="download-btn" onclick="downloadContent('AI Projects')">Download</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="upload" class="content-section">
-            <div class="upload-section">
-                <h2>📤 Upload Study Material</h2>
-                <form id="uploadForm" onsubmit="handleUpload(event)">
-                    <div class="form-group">
-                        <label for="uploadClass">Class:</label>
-                        <select id="uploadClass" required>
-                            <option value="">Select Class</option>
-                            <option value="9">Class 9</option>
-                            <option value="10">Class 10</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="contentType">Content Type:</label>
-                        <select id="contentType" required>
-                            <option value="">Select Type</option>
-                            <option value="notes">Notes</option>
-                            <option value="questions">Important Questions</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="subject">Subject:</label>
-                        <select id="subject" required>
-                            <option value="">Select Subject</option>
-                            <option value="mathematics">Mathematics</option>
-                            <option value="physics">Physics</option>
-                            <option value="chemistry">Chemistry</option>
-                            <option value="biology">Biology</option>
-                            <option value="social">Social Science</option>
-                            <option value="english">English</option>
-                            <option value="ai">Artificial Intelligence</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="title">Title:</label>
-                        <input type="text" id="title" placeholder="e.g., Chapter 5 - Thermodynamics" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea id="description" placeholder="Brief description of the content..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="yourName">Your Name:</label>
-                        <input type="text" id="yourName" placeholder="Your name (optional)">
-                    </div>
-
-                    <button type="submit" class="submit-btn">Upload Content</button>
-                </form>
-                <div id="successMsg" class="success-msg">
-                    ✅ Content uploaded successfully! Thank you for contributing.
-                </div>
-            </div>
-        </div>
-
-        <div id="requests" class="content-section">
-            <div class="class-selector">
-                <button class="class-btn active" onclick="showClass('requests', 9)">Class 9</button>
-                <button class="class-btn" onclick="showClass('requests', 10)">Class 10</button>
-            </div>
-
-            <div class="class-content" id="requests-class9">
-                <h2 class="class-heading">🙋 Class 9 - Request & Help</h2>
-                <div class="request-container">
-                <div class="request-form-section">
-                    <h2>🙋 Request Study Material</h2>
-                    <form id="requestForm" onsubmit="handleRequest(event)">
-                        <div class="form-group">
-                            <label for="reqSubject">Subject:</label>
-                            <select id="reqSubject" required>
-                                <option value="">Select Subject</option>
-                                <option value="mathematics">Mathematics</option>
-                                <option value="physics">Physics</option>
-                                <option value="chemistry">Chemistry</option>
-                                <option value="biology">Biology</option>
-                                <option value="social">Social Science</option>
-                                <option value="english">English</option>
-                                <option value="ai">Artificial Intelligence</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reqType">Request Type:</label>
-                            <select id="reqType" required>
-                                <option value="">Select Type</option>
-                                <option value="notes">Notes</option>
-                                <option value="questions">Important Questions</option>
-                                <option value="both">Both</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reqTopic">Topic/Chapter:</label>
-                            <input type="text" id="reqTopic" placeholder="e.g., Calculus Chapter 3" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reqDetails">Details:</label>
-                            <textarea id="reqDetails" placeholder="Describe what you're looking for..." required></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reqName">Your Name:</label>
-                            <input type="text" id="reqName" placeholder="Your name" required>
-                        </div>
-
-                        <button type="submit" class="submit-btn">Post Request</button>
-                    </form>
-                    <div id="requestSuccessMsg" class="success-msg">
-                        ✅ Request posted successfully! Students will help you soon.
-                    </div>
-                </div>
-
-                <div class="requests-list-section">
-                    <h2>📋 Active Requests</h2>
-                    <div class="requests-list" id="requestsList">
-                        <div class="request-card">
-                            <div class="request-header">
-                                <span class="request-subject">📐 Mathematics</span>
-                                <span class="request-time">2 hours ago</span>
-                            </div>
-                            <h4>Integration Techniques - Chapter 7</h4>
-                            <p>Need notes and practice questions on integration by parts and substitution method.</p>
-                            <div class="request-footer">
-                                <span class="requester">Requested by: Rahul S.</span>
-                                <button class="help-btn" onclick="showHelpForm(1)">💡 I Can Help</button>
-                            </div>
-                            <div class="help-form" id="helpForm1" style="display: none;">
-                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
-                                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                    <input type="text" placeholder="Your name" style="flex: 1;">
-                                    <button class="submit-help-btn" onclick="submitHelp(1)">Send Help</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="request-card">
-                            <div class="request-header">
-                                <span class="request-subject">🔬 Physics</span>
-                                <span class="request-time">5 hours ago</span>
-                            </div>
-                            <h4>Electromagnetic Waves - Notes</h4>
-                            <p>Looking for detailed notes on electromagnetic spectrum and wave properties.</p>
-                            <div class="request-footer">
-                                <span class="requester">Requested by: Priya K.</span>
-                                <button class="help-btn" onclick="showHelpForm(2)">💡 I Can Help</button>
-                            </div>
-                            <div class="help-form" id="helpForm2" style="display: none;">
-                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
-                                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                    <input type="text" placeholder="Your name" style="flex: 1;">
-                                    <button class="submit-help-btn" onclick="submitHelp(2)">Send Help</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="request-card">
-                            <div class="request-header">
-                                <span class="request-subject">🧪 Chemistry</span>
-                                <span class="request-time">1 day ago</span>
-                            </div>
-                            <h4>Organic Chemistry Reactions</h4>
-                            <p>Need important questions and reaction mechanisms for board exam preparation.</p>
-                            <div class="request-footer">
-                                <span class="requester">Requested by: Amit T.</span>
-                                <button class="help-btn" onclick="showHelpForm(3)">💡 I Can Help</button>
-                            </div>
-                            <div class="help-form" id="helpForm3" style="display: none;">
-                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
-                                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                    <input type="text" placeholder="Your name" style="flex: 1;">
-                                    <button class="submit-help-btn" onclick="submitHelp(3)">Send Help</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="request-card">
-                            <div class="request-header">
-                                <span class="request-subject">📖 English</span>
-                                <span class="request-time">1 day ago</span>
-                            </div>
-                            <h4>Essay Writing Tips</h4>
-                            <p>Looking for essay writing formats and sample essays for board exams.</p>
-                            <div class="request-footer">
-                                <span class="requester">Requested by: Sneha M.</span>
-                                <button class="help-btn" onclick="showHelpForm(4)">💡 I Can Help</button>
-                            </div>
-                            <div class="help-form" id="helpForm4" style="display: none;">
-                                <textarea placeholder="Provide link or description of material you can share..." rows="3"></textarea>
-                                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                    <input type="text" placeholder="Your name" style="flex: 1;">
-                                    <button class="submit-help-btn" onclick="submitHelp(4)">Send Help</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>💡 Together we learn, together we grow</p>
-            <p style="margin-top: 10px; font-size: 0.9em;">Made with ❤️ for students, by students</p>
-        </footer>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo">SS</div>
+      <div>
+        <div class="title">School Study Portal</div>
+        <div class="tagline small">Share Knowledge • Excel Together</div>
+      </div>
     </div>
 
-    <script>
-        function showTab(tabName) {
-            const sections = document.querySelectorAll('.content-section');
-            const buttons = document.querySelectorAll('.tab-btn');
-            
-            sections.forEach(section => section.classList.remove('active'));
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
+    <div class="controls">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="icon-btn" id="themeToggle" title="Toggle dark / light"><i class="fa fa-moon fa-lg"></i></button>
+      </div>
+    </div>
+  </header>
 
-        function showClass(section, classNum) {
-            // Get all class buttons in the current section
-            const sectionElement = document.getElementById(section);
-            const classBtns = sectionElement.querySelectorAll('.class-btn');
-            const classContents = sectionElement.querySelectorAll('.class-content');
-            
-            // Remove active class from all buttons
-            classBtns.forEach(btn => btn.classList.remove('active'));
-            
-            // Hide all class contents
-            classContents.forEach(content => content.style.display = 'none');
-            
-            // Show selected class content
-            document.getElementById(section + '-class' + classNum).style.display = 'block';
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
+  <main class="container">
+    <!-- Search -->
+    <div class="searchbar fade-in">
+      <input id="globalSearch" placeholder="Search notes, questions, topics... try: 'Class 10 Electricity' or 'Polynomials'">
+      <button class="submit-btn" id="searchClear">Clear</button>
+    </div>
 
-        function downloadContent(contentName) {
-            alert('Download started for: ' + contentName + '\n\nNote: This is a demo. In a real application, the actual file would be downloaded here.');
-        }
+    <!-- Class selector -->
+    <div class="class-selector-main">
+      <button class="main-class-btn active" data-class="9">Class 9</button>
+      <button class="main-class-btn" data-class="10">Class 10</button>
+    </div>
 
-        function handleUpload(event) {
-            event.preventDefault();
-            
-            const form = document.getElementById('uploadForm');
-            const successMsg = document.getElementById('successMsg');
-            
-            successMsg.style.display = 'block';
-            form.reset();
-            
-            setTimeout(() => {
-                successMsg.style.display = 'none';
-            }, 3000);
-            
-            return false;
-        }
+    <div class="layout">
+      <!-- Main content -->
+      <section>
+        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="tab-btn icon-btn active" data-tab="notes" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">📝 Notes</button>
+            <button class="tab-btn icon-btn" data-tab="questions" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">❓ Questions</button>
+            <button class="tab-btn icon-btn" data-tab="requests" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">🙋 Requests</button>
+            <button class="tab-btn icon-btn" data-tab="upload" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">⬆️ Upload</button>
+          </div>
 
-        function handleRequest(event) {
-            event.preventDefault();
-            
-            const formId = event.target.id;
-            const successMsgId = formId === 'requestForm' ? 'requestSuccessMsg' : 'requestSuccessMsg10';
-            const form = document.getElementById(formId);
-            const successMsg = document.getElementById(successMsgId);
-            
-            successMsg.style.display = 'block';
-            form.reset();
-            
-            setTimeout(() => {
-                successMsg.style.display = 'none';
-            }, 3000);
-            
-            return false;
-        }
+          <div class="small">Tip: Use the search to quickly locate content. Chat with <b>StudyMate</b> for suggestions.</div>
+        </div>
 
-        function showHelpForm(id) {
-            const helpForm = document.getElementById('helpForm' + id);
-            if (helpForm.style.display === 'none') {
-                helpForm.style.display = 'block';
-            } else {
-                helpForm.style.display = 'none';
-            }
-        }
+        <!-- NOTES tab content -->
+        <div id="notesTab" class="fade-in content-area">
+          <div class="subject-grid" id="notesGrid">
+            <!-- dynamic cards inserted here -->
+          </div>
+        </div>
 
-        function submitHelp(id) {
-            alert('Thank you for helping! Your response has been sent to the requester.');
-            document.getElementById('helpForm' + id).style.display = 'none';
-        }
-    </script>
+        <!-- QUESTIONS tab -->
+        <div id="questionsTab" class="fade-in content-area" style="display:none;">
+          <div class="subject-grid" id="questionsGrid"></div>
+        </div>
+
+        <!-- REQUESTS tab -->
+        <div id="requestsTab" class="fade-in content-area" style="display:none;">
+          <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+            <div class="request-form-section">
+              <h3>Request Study Material</h3>
+              <form id="requestForm">
+                <label>Subject</label>
+                <select id="reqSubject" required>
+                  <option value="">Select Subject</option>
+                  <option value="mathematics">Mathematics</option>
+                  <option value="physics">Physics</option>
+                  <option value="chemistry">Chemistry</option>
+                  <option value="biology">Biology</option>
+                  <option value="social">Social Science</option>
+                  <option value="english">English</option>
+                  <option value="ai">Artificial Intelligence</option>
+                </select>
+
+                <label style="margin-top:10px">Type</label>
+                <select id="reqType" required>
+                  <option value="notes">Notes</option>
+                  <option value="questions">Important Questions</option>
+                  <option value="both">Both</option>
+                </select>
+
+                <label style="margin-top:10px">Topic / Chapter</label>
+                <input id="reqTopic" placeholder="e.g., Quadratic Equations" required>
+
+                <label style="margin-top:10px">Details</label>
+                <textarea id="reqDetails" placeholder="Describe what you want..."></textarea>
+
+                <label style="margin-top:10px">Your name</label>
+                <input id="reqName" placeholder="Your name (optional)">
+
+                <div style="margin-top:12px;display:flex;gap:10px;">
+                  <button class="submit-btn" type="submit">Post Request</button>
+                  <button class="submit-btn" type="button" id="suggestFromAI">Suggest with StudyMate</button>
+                </div>
+
+                <div class="success-msg" id="requestSuccess">✅ Request posted! Visible in active requests.</div>
+              </form>
+            </div>
+
+            <div class="requests-list-section">
+              <h3>Active Requests</h3>
+              <div id="activeRequests" class="requests-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPLOAD tab -->
+        <div id="uploadTab" class="fade-in content-area" style="display:none;">
+          <div class="upload-section">
+            <h3>Upload Study Material</h3>
+            <form id="uploadForm">
+              <label>Content Type</label>
+              <select id="contentType" required>
+                <option value="">Select Type</option>
+                <option value="notes">Notes</option>
+                <option value="questions">Important Questions</option>
+              </select>
+
+              <label style="margin-top:10px">Subject</label>
+              <select id="subject" required>
+                <option value="">Select Subject</option>
+                <option value="mathematics">Mathematics</option>
+                <option value="physics">Physics</option>
+                <option value="chemistry">Chemistry</option>
+                <option value="biology">Biology</option>
+                <option value="social">Social Science</option>
+                <option value="english">English</option>
+                <option value="ai">Artificial Intelligence</option>
+              </select>
+
+              <label style="margin-top:10px">Title</label>
+              <input id="title" placeholder="e.g., Light - Reflection & Refraction" required>
+
+              <label style="margin-top:10px">Description</label>
+              <textarea id="description" placeholder="Short description..."></textarea>
+
+              <label style="margin-top:10px">Upload File (optional)</label>
+              <input id="fileInput" type="file" accept=".pdf,.docx,.pptx,.txt" />
+
+              <label style="margin-top:10px">Your Name</label>
+              <input id="uploader" placeholder="Your name">
+
+              <div style="margin-top:12px;display:flex;gap:10px;">
+                <button class="submit-btn" type="submit">Upload</button>
+                <button class="submit-btn" type="button" id="autoCatBtn">Auto-categorize</button>
+              </div>
+
+              <div class="success-msg" id="uploadSuccess">✅ Uploaded and saved locally.</div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="card-mini">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>Quick Filters</strong><div class="small">Click to filter</div></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <button class="chip" data-filter="mathematics">Math</button>
+            <button class="chip" data-filter="physics">Physics</button>
+            <button class="chip" data-filter="chemistry">Chem</button>
+            <button class="chip" data-filter="biology">Bio</button>
+            <button class="chip" data-filter="social">Social</button>
+            <button class="chip" data-filter="english">English</button>
+            <button class="chip" data-filter="ai">AI</button>
+          </div>
+        </div>
+
+        <div class="card-mini">
+          <h4>Active Requests</h4>
+          <div id="miniRequests" class="small"></div>
+        </div>
+
+        <div class="card-mini">
+          <h4>Shortcuts</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+            <button class="submit-btn" id="goNotes">Go to Notes</button>
+            <button class="submit-btn" id="goUpload">Go to Upload</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>Made with ❤️ for students • StudyMate powered suggestions</footer>
+  </main>
+
+  <!-- Chatbot UI -->
+  <div class="chat-toggle" id="chatRoot">
+    <div id="chatWindow" style="display:none;" class="chat-window fade-in">
+      <div class="chat-header">
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div style="width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:10px;color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;">SM</div>
+          <div>
+            <div style="font-weight:700;color:var(--accent)">StudyMate AI</div>
+            <div class="small">Your friendly study assistant</div>
+          </div>
+        </div>
+        <div style="margin-left:auto;">
+          <button class="icon-btn" id="closeChat"><i class="fa fa-times"></i></button>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg bot">Hi! I’m <b>StudyMate</b>. Ask me for topic suggestions, quick notes, or type "recommend" to get study tips.</div>
+      </div>
+
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Ask StudyMate (e.g., 'suggest notes for quadratic equations')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
+        <button class="submit-btn" id="sendChat">Send</button>
+      </div>
+    </div>
+
+    <button id="openChat" class="chat-btn" title="Open StudyMate"><i class="fa fa-comments fa-lg"></i></button>
+  </div>
+
+<script>
+/* ========== Data store (localStorage) ========== */
+const STORE_KEYS = { notes: 'ss_notes_v1', questions: 'ss_questions_v1', requests:'ss_requests_v1', theme:'ss_theme' };
+const defaultNotes = [
+  { id: genId(), class:9, subject:'mathematics', title:'Polynomials', desc:'Concepts & practice', file:null },
+  { id: genId(), class:9, subject:'physics', title:'Motion', desc:'Kinematics basics', file:null },
+  { id: genId(), class:10, subject:'physics', title:'Light - Reflection & Refraction', desc:'Complete notes with diagrams', file:null },
+  { id: genId(), class:10, subject:'mathematics', title:'Quadratic Equations', desc:'Formulas & practice', file:null }
+];
+
+const defaultQuestions = [
+  { id: genId(), class:9, subject:'mathematics', title:'Number Systems - Practice', desc:'MCQs & short answers' },
+  { id: genId(), class:10, subject:'physics', title:'Light - Numericals', desc:'Reflection / Refraction problems' }
+];
+
+function genId(){ return 'id_' + Math.random().toString(36).slice(2,9); }
+
+function loadStore(key, fallback){
+  try{
+    const v = localStorage.getItem(key);
+    if(!v && fallback!==undefined) { localStorage.setItem(key, JSON.stringify(fallback)); return fallback; }
+    return v ? JSON.parse(v) : fallback;
+  } catch(e){ console.error(e); return fallback; }
+}
+function saveStore(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+/* initialize stores if empty */
+if(!localStorage.getItem(STORE_KEYS.notes)) saveStore(STORE_KEYS.notes, defaultNotes);
+if(!localStorage.getItem(STORE_KEYS.questions)) saveStore(STORE_KEYS.questions, defaultQuestions);
+if(!localStorage.getItem(STORE_KEYS.requests)) saveStore(STORE_KEYS.requests, []);
+
+/* ========== App state ========== */
+let activeClass = 9;
+let activeTab = 'notes'; // notes, questions, requests, upload
+
+/* UI refs */
+const notesGrid = document.getElementById('notesGrid');
+const questionsGrid = document.getElementById('questionsGrid');
+const activeRequests = document.getElementById('activeRequests');
+const miniRequests = document.getElementById('miniRequests');
+
+const tabs = document.querySelectorAll('.tab-btn');
+const classBtns = document.querySelectorAll('.main-class-btn');
+const searchInput = document.getElementById('globalSearch');
+const searchClear = document.getElementById('searchClear');
+const filterChips = document.querySelectorAll('.chip');
+const themeToggle = document.getElementById('themeToggle');
+
+/* ========== Theme handling ========== */
+function applyTheme(theme){
+  if(theme === 'light'){ document.documentElement.classList.add('light'); themeToggle.innerHTML = '<i class="fa fa-sun"></i>'; }
+  else { document.documentElement.classList.remove('light'); themeToggle.innerHTML = '<i class="fa fa-moon"></i>'; }
+  localStorage.setItem(STORE_KEYS.theme, theme);
+}
+const savedTheme = localStorage.getItem(STORE_KEYS.theme) || 'dark';
+applyTheme(savedTheme);
+
+themeToggle.addEventListener('click', ()=> applyTheme(document.documentElement.classList.contains('light') ? 'dark' : 'light'));
+
+/* ========== Rendering functions ========== */
+function renderNotes(){
+  const all = loadStore(STORE_KEYS.notes, []);
+  const filtered = all.filter(n => n.class === +activeClass);
+  notesGrid.innerHTML = '';
+  const grouped = groupBy(filtered, 'subject');
+  // Render each subject as a card
+  for(const subj of Object.keys(grouped)){
+    const items = grouped[subj];
+    const card = document.createElement('div'); card.className='subject-card';
+    card.innerHTML = `<h3><span class="subject-icon">${emojiForSub(subj)}</span> ${capitalize(subj)}</h3>
+      <ul class="content-list">${items.map(it => `<li class="content-item"><span>${it.title} <div class="small" style="display:block">${it.desc||''}</div></span><div style="display:flex;gap:8px;align-items:center"><button class="download-btn" data-id="${it.id}">Open</button></div></li>`).join('')}</ul>`;
+    notesGrid.appendChild(card);
+  }
+  // hook download/open buttons
+  notesGrid.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
+    const id = e.currentTarget.dataset.id;
+    const it = all.find(x=>x.id===id);
+    if(it) alert(`Open: ${it.title}\n\nDescription: ${it.desc || '(none)'}\n\nNote: This demo opens a dialog; integrate a backend for real files.`);
+  }));
+}
+
+function renderQuestions(){
+  const all = loadStore(STORE_KEYS.questions, []);
+  const filtered = all.filter(q => q.class === +activeClass);
+  questionsGrid.innerHTML='';
+  const grouped = groupBy(filtered, 'subject');
+  for(const subj of Object.keys(grouped)){
+    const items = grouped[subj];
+    const card = document.createElement('div'); card.className='subject-card';
+    card.innerHTML = `<h3><span class="subject-icon">${emojiForSub(subj)}</span> ${capitalize(subj)}</h3>
+      <ul class="content-list">${items.map(it => `<li class="content-item"><span>${it.title}<div class="small" style="display:block">${it.desc||''}</div></span><div><button class="download-btn" data-qid="${it.id}">Open</button></div></li>`).join('')}</ul>`;
+    questionsGrid.appendChild(card);
+  }
+  questionsGrid.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
+    const id = e.currentTarget.dataset.qid;
+    const it = loadStore(STORE_KEYS.questions,[]).find(x=>x.id===id);
+    if(it) alert(`Open question set: ${it.title}\n\n${it.desc||''}`);
+  }));
+}
+
+function renderRequests(){
+  const requests = loadStore(STORE_KEYS.requests,[]);
+  activeRequests.innerHTML = '';
+  miniRequests.innerHTML = '';
+  if(requests.length===0){ activeRequests.innerHTML = '<div class="small">No active requests yet.</div>'; miniRequests.innerHTML = '<div class="small">No requests</div>'; return; }
+  requests.slice().reverse().forEach(r => {
+    const rc = document.createElement('div'); rc.className='request-card';
+    rc.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">${capitalize(r.subject)} • <span class="small">${capitalize(r.type)}</span></div><div class="small">${timeAgo(r.created)}</div></div>
+      <h4 style="margin:8px 0 6px">${r.topic}</h4><p style="margin:0">${r.details}</p>
+      <div style="margin-top:8px;display:flex;gap:8px;justify-content:space-between;align-items:center">
+        <div class="small">Requested by: ${r.name||'Anonymous'}</div>
+        <div><button class="submit-btn" data-help="${r.id}">I can help</button></div>
+      </div>`;
+    activeRequests.appendChild(rc);
+
+    // mini representation
+    const mini = document.createElement('div'); mini.className='small'; mini.innerText = `${capitalize(r.subject)}: ${r.topic} — ${r.name||'Anonymous'}`;
+    miniRequests.appendChild(mini);
+  });
+
+  // help buttons
+  activeRequests.querySelectorAll('[data-help]').forEach(b => b.addEventListener('click', (e)=> {
+    const id = e.currentTarget.dataset.help;
+    alert('Thanks! Marking as answered locally (demo). In a real app this would notify the requester.');
+    // remove request locally for demo:
+    let rs = loadStore(STORE_KEYS.requests, []);
+    rs = rs.filter(x=>x.id!==id);
+    saveStore(STORE_KEYS.requests, rs);
+    renderRequests();
+  }));
+}
+
+/* ========== Utilities ========== */
+function groupBy(arr, key){
+  return arr.reduce((acc,item)=>{ const k = item[key]||'other'; (acc[k]||(acc[k]=[])).push(item); return acc; }, {});
+}
+function capitalize(s){ if(!s) return s; return s.charAt(0).toUpperCase()+s.slice(1); }
+function emojiForSub(sub){
+  const map = { mathematics:'📐', physics:'🔬', chemistry:'🧪', biology:'🧬', social:'🌍', english:'📖', ai:'🤖' };
+  return map[sub] || '📚';
+}
+function timeAgo(ts){ const d = new Date(ts); const diff = (Date.now()-d.getTime())/1000; if(diff<60) return Math.floor(diff)+'s ago'; if(diff<3600) return Math.floor(diff/60)+'m ago'; if(diff<86400) return Math.floor(diff/3600)+'h ago'; return d.toLocaleString(); }
+
+/* ========== Initial render ========== */
+renderAll();
+
+/* ========== Interaction: tabs & class selection ========== */
+tabs.forEach(t => t.addEventListener('click', (e)=> {
+  tabs.forEach(x=>x.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  const tab = e.currentTarget.dataset.tab;
+  setActiveTab(tab);
+}));
+
+classBtns.forEach(btn => btn.addEventListener('click', (e)=>{
+  classBtns.forEach(b=>b.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  activeClass = +e.currentTarget.dataset.class;
+  renderAll();
+}));
+
+function setActiveTab(tab){
+  activeTab = tab;
+  document.getElementById('notesTab').style.display = (tab==='notes') ? '' : 'none';
+  document.getElementById('questionsTab').style.display = (tab==='questions') ? '' : 'none';
+  document.getElementById('requestsTab').style.display = (tab==='requests') ? '' : 'none';
+  document.getElementById('uploadTab').style.display = (tab==='upload') ? '' : 'none';
+}
+
+/* ========== Search ======== */
+searchInput.addEventListener('input', ()=> applySearch(searchInput.value));
+searchClear.addEventListener('click', ()=> { searchInput.value=''; applySearch(''); });
+
+function applySearch(q){
+  q = (q||'').trim().toLowerCase();
+  if(q==='') { renderAll(); return; }
+  // search both notes and questions
+  const notes = loadStore(STORE_KEYS.notes,[]).filter(n => (n.class===activeClass) && ((n.title||'').toLowerCase().includes(q) || (n.desc||'').toLowerCase().includes(q) || (n.subject||'').toLowerCase().includes(q)));
+  const questions = loadStore(STORE_KEYS.questions,[]).filter(n => (n.class===activeClass) && ((n.title||'').toLowerCase().includes(q) || (n.desc||'').toLowerCase().includes(q) || (n.subject||'').toLowerCase().includes(q)));
+  // render results as cards
+  notesGrid.innerHTML=''; questionsGrid.innerHTML='';
+  if(notes.length>0){
+    const card = document.createElement('div'); card.className='subject-card';
+    card.innerHTML = `<h3><span class="subject-icon">🔎</span> Search Results — Notes</h3><ul class="content-list">${notes.map(it=>`<li class="content-item"><span>${it.title} <div class="small">${it.subject} • class ${it.class}</div></span><div><button class="download-btn" data-id="${it.id}">Open</button></div></li>`).join('')}</ul>`;
+    notesGrid.appendChild(card);
+    card.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
+      const id = e.currentTarget.dataset.id;
+      const it = loadStore(STORE_KEYS.notes,[]).find(x=>x.id===id);
+      if(it) alert(`${it.title}\n\n${it.desc||''}`);
+    }));
+  }
+  if(questions.length>0){
+    const card = document.createElement('div'); card.className='subject-card';
+    card.innerHTML = `<h3><span class="subject-icon">🔎</span> Search Results — Questions</h3><ul class="content-list">${questions.map(it=>`<li class="content-item"><span>${it.title} <div class="small">${it.subject} • class ${it.class}</div></span><div><button class="download-btn" data-qid="${it.id}">Open</button></div></li>`).join('')}</ul>`;
+    questionsGrid.appendChild(card);
+    card.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
+      const id = e.currentTarget.dataset.qid;
+      const it = loadStore(STORE_KEYS.questions,[]).find(x=>x.id===id);
+      if(it) alert(`${it.title}\n\n${it.desc||''}`);
+    }));
+  }
+}
+
+/* ========== Quick filters ======== */
+filterChips.forEach(c => c.addEventListener('click', (e)=> {
+  const f = e.currentTarget.dataset.filter;
+  searchInput.value = f;
+  applySearch(f);
+}));
+
+/* ========== Upload/Auto-categorization ======== */
+const autoKeywords = {
+  mathematics: ["polynomial","quadratic","trigonometry","number","algebra","geometry"],
+  physics: ["motion","force","light","electricity","magnetic","refraction","reflection","kinematics","ohm"],
+  chemistry: ["acid","base","reaction","salt","metal","non-metal","molecule","atom"],
+  biology: ["cell","tissues","life","heredity","evolution","diagram","photosynthesis"],
+  social: ["nationalism","resources","federalism","map","history","geography"],
+  english: ["beehive","moments","poem","prose","grammar","letter"],
+  ai: ["machine learning","neural","data","ai","algorithm","model"]
+};
+
+document.getElementById('autoCatBtn').addEventListener('click', ()=>{
+  const title = (document.getElementById('title').value||'').toLowerCase();
+  const desc = (document.getElementById('description').value||'').toLowerCase();
+  const text = title + ' ' + desc;
+  let best=null, score=0;
+  Object.keys(autoKeywords).forEach(sub=>{
+    let s = 0;
+    autoKeywords[sub].forEach(k => { if(text.includes(k)) s++; });
+    if(s>score){ score=s; best=sub; }
+  });
+  if(best){
+    document.getElementById('subject').value = best;
+    // if title contained keywords, suggest contentType
+    if(text.includes('question')||text.includes('practice')||text.includes('numerical')) document.getElementById('contentType').value='questions';
+    else document.getElementById('contentType').value='notes';
+    alert(`Auto-categorized as: ${capitalize(best)} (${score} keyword match${score>1?'es':''})`);
+  } else alert('Could not auto-categorize — try adding a more descriptive title/description.');
+});
+
+document.getElementById('uploadForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const ct = document.getElementById('contentType').value;
+  const subj = document.getElementById('subject').value;
+  const title = document.getElementById('title').value;
+  const desc = document.getElementById('description').value;
+  const file = document.getElementById('fileInput').files[0] || null;
+  const name = document.getElementById('uploader').value || 'Anonymous';
+  if(!ct || !subj || !title) return alert('Please fill required fields.');
+  const item = { id: genId(), class: activeClass, subject: subj, title, desc, fileName: file?file.name:null, uploader:name, created:Date.now() };
+  if(ct==='notes'){ const arr = loadStore(STORE_KEYS.notes,[]); arr.push(item); saveStore(STORE_KEYS.notes, arr); }
+  else { const arr = loadStore(STORE_KEYS.questions,[]); arr.push(item); saveStore(STORE_KEYS.questions, arr); }
+  document.getElementById('uploadSuccess').style.display='block';
+  setTimeout(()=> document.getElementById('uploadSuccess').style.display='none', 2500);
+  document.getElementById('uploadForm').reset();
+  renderAll();
+});
+
+/* ========== Requests handling ======== */
+document.getElementById('requestForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const subj = document.getElementById('reqSubject').value;
+  const type = document.getElementById('reqType').value;
+  const topic = document.getElementById('reqTopic').value;
+  const details = document.getElementById('reqDetails').value;
+  const name = document.getElementById('reqName').value || 'Anonymous';
+  if(!subj || !topic) return alert('Please fill subject and topic.');
+  const req = { id: genId(), subject:subj, type, topic, details, name, created: Date.now() };
+  const arr = loadStore(STORE_KEYS.requests,[]); arr.push(req); saveStore(STORE_KEYS.requests, arr);
+  document.getElementById('requestSuccess').style.display='block';
+  setTimeout(()=> document.getElementById('requestSuccess').style.display='none', 2500);
+  document.getElementById('requestForm').reset();
+  renderRequests();
+});
+
+/* ========== Suggest with StudyMate (button in requests) ========= */
+document.getElementById('suggestFromAI').addEventListener('click', ()=>{
+  const topic = document.getElementById('reqTopic').value || '';
+  const subj = document.getElementById('reqSubject').value || '';
+  const q = `${topic} ${subj}`.trim();
+  openChat();
+  postUserMessage(`Suggest for: ${q}`);
+  setTimeout(()=> studyMateReplyFor(q), 600);
+});
+
+/* ========== Chatbot logic (StudyMate AI) ========== */
+const openChatBtn = document.getElementById('openChat');
+const chatWindow = document.getElementById('chatWindow');
+const closeChatBtn = document.getElementById('closeChat');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendChat = document.getElementById('sendChat');
+
+openChatBtn.addEventListener('click', openChat);
+closeChatBtn.addEventListener('click', closeChat);
+sendChat.addEventListener('click', ()=> { const v = chatInput.value.trim(); if(!v) return; postUserMessage(v); chatInput.value=''; setTimeout(()=> studyMateReplyFor(v), 600); });
+chatInput.addEventListener('keypress', (e)=> { if(e.key==='Enter'){ e.preventDefault(); sendChat.click(); } });
+
+function openChat(){ openChatBtn.style.display='none'; chatWindow.style.display='flex'; chatInput.focus(); }
+function closeChat(){ openChatBtn.style.display='inline-flex'; chatWindow.style.display='none'; }
+
+function postUserMessage(text){
+  const m = document.createElement('div'); m.className='msg user'; m.innerText = text; chatMessages.appendChild(m); chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function postBotMessage(html){
+  const m = document.createElement('div'); m.className='msg bot'; m.innerHTML = html; chatMessages.appendChild(m); chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+/* StudyMate's reply generator (simple but useful) */
+function studyMateReplyFor(input){
+  input = (input||'').toLowerCase();
+  if(!input) { postBotMessage("Tell me what topic or chapter you'd like help with — e.g., 'polynomials' or 'electricity numericals'."); return; }
+
+  // basic commands
+  if(input.includes('recommend') || input.includes('tips')){
+    return postBotMessage(`<b>Study tips:</b><ul><li>Break study into 25-min focused Pomodoro sessions.</li><li>Revise older topics every 3 days.</li><li>Attempt previous year papers under timed conditions.</li></ul>`);
+  }
+
+  // look for keywords to recommend notes from local storage
+  const bestMatches = [];
+  const notes = loadStore(STORE_KEYS.notes,[]);
+  const q = input.replace(/[^a-z0-9 ]/g,'');
+  notes.forEach(n => {
+    const score = ((n.title||'')+ ' ' + (n.desc||'') + ' ' + (n.subject||'')).toLowerCase().split(' ').reduce((s,w)=> s + (q.includes(w) ? 1:0), 0);
+    if(score>0) bestMatches.push({score, n});
+  });
+  bestMatches.sort((a,b)=>b.score-a.score);
+
+  if(bestMatches.length>0){
+    const top = bestMatches.slice(0,4).map(x=>`<div style="padding:6px;border-radius:8px;border:1px dashed rgba(0,0,0,0.05);margin-bottom:6px;"><b>${x.n.title}</b><div class="small">${capitalize(x.n.subject)} • class ${x.n.class}</div><div class="small">${x.n.desc||''}</div></div>`).join('');
+    postBotMessage(`<b>Here are locally available resources I found:</b><div style="margin-top:8px">${top}</div><div class="small">Tip: Upload more notes to improve recommendations.</div>`);
+    return;
+  }
+
+  // if nothing local, provide study plan summary
+  const fallbackPlan = generateStudyPlan(input);
+  postBotMessage(`<b>Study plan for "${input}":</b><div style="margin-top:6px">${fallbackPlan}</div>`);
+}
+
+function generateStudyPlan(topic){
+  return `<ol style="margin:6px 0 0 16px">
+    <li>Read core concepts (20–30 min)</li>
+    <li>Make concise one-page notes (15 min)</li>
+    <li>Solve 5–10 practice problems (30 min)</li>
+    <li>Review mistakes & mark weak points (20 min)</li>
+  </ol><div class="small" style="margin-top:6px">Pro tip: After two days, test yourself again for retention.</div>`;
+}
+
+/* ========== Render helper: renderAll ========= */
+function renderAll(){ renderNotes(); renderQuestions(); renderRequests(); }
+
+/* ========== Misc: shortcuts ======= */
+document.getElementById('goNotes').addEventListener('click', ()=> { setActiveTab('notes'); });
+document.getElementById('goUpload').addEventListener('click', ()=> { setActiveTab('upload'); });
+
+/* ========== Mini: suggestion from StudyMate when opening chat ========= */
+openChat(); // open by default once to show message, then close quickly
+setTimeout(()=> closeChat(), 1600);
+
+/* ========== Helpful UI wiring ======= */
+document.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', (e)=>{
+  const f = e.currentTarget.dataset.filter;
+  searchInput.value = f;
+  applySearch(f);
+}));
+
+/* ========== small helper to seed some visual content if empty ========== */
+(function seedIfEmpty(){
+  const notes = loadStore(STORE_KEYS.notes,[]);
+  if(notes.length===0){ saveStore(STORE_KEYS.notes, defaultNotes); }
+  const q = loadStore(STORE_KEYS.questions,[]);
+  if(q.length===0) saveStore(STORE_KEYS.questions, defaultQuestions);
+  renderAll();
+})();
+</script>
 </body>
 </html>
