@@ -1,813 +1,145 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>School Study Portal — Enhanced</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Study Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    .subject-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 25px;
+      height: 80vh;
+      padding: 20px;
+    }
 
-<!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Nu/..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    .subject-btn {
+      font-size: 1.8rem;
+      padding: 25px 50px;
+      border: none;
+      border-radius: 15px;
+      background-color: #1a1a1a;
+      color: #f0f0f0;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+      min-width: 220px;
+    }
 
-<style>
-  :root{
-    --bg-1: #1a1a1a;
-    --bg-2: #2d2d2d;
-    --card: #f5f5dc; /* beige */
-    --accent: #ff8c00; /* orange */
-    --accent-dark: #ff6600;
-    --muted: #666;
-    --glass: rgba(255,255,255,0.04);
-    --success: #d4edda;
-    --white: #f5f5dc;
-  }
+    .subject-btn:hover {
+      transform: scale(1.1);
+      background-color: #333333;
+    }
 
-  /* Light theme overrides */
-  :root.light {
-    --bg-1: #fff8f0;
-    --bg-2: #fffaf5;
-    --card: #fff;
-    --glass: rgba(0,0,0,0.03);
-    --muted: #444;
-  }
+    .option-btn {
+      font-size: 1.5rem;
+      padding: 20px 40px;
+      margin: 20px;
+      border: none;
+      border-radius: 12px;
+      background-color: #1a1a1a;
+      color: #f0f0f0;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
 
-  html,body{
-    margin:0;
-    padding:0;
-    height:100%;
-    font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: linear-gradient(135deg,var(--bg-1),var(--bg-2));
-    color: #111;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-  }
+    .option-btn:hover {
+      transform: scale(1.05);
+      background-color: #333333;
+    }
 
-  /* Sticky header */
-  header.app-header{
-    position: sticky;
-    top:0;
-    z-index:40;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:14px 20px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
-    border-bottom: 1px solid rgba(255,140,0,0.08);
-    backdrop-filter: blur(6px);
-  }
+    #chapters-container {
+      display: none;
+      text-align: left;
+      margin-top: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-  .brand {
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-
-  .logo {
-    width:48px;height:48px;border-radius:10px;
-    background: linear-gradient(135deg,var(--accent),var(--accent-dark));
-    display:flex;align-items:center;justify-content:center;color:var(--white);
-    font-weight:700;font-size:20px;box-shadow:0 6px 18px rgba(255,140,0,0.12);
-  }
-
-  .title {
-    font-size:1.2rem;
-    font-weight:700;
-    color:var(--accent);
-  }
-
-  .tagline {
-    font-size:0.85rem;color:var(--muted);
-  }
-
-  .controls {
-    display:flex;gap:10px;align-items:center;
-  }
-
-  button.icon-btn{
-    background:transparent;border:0;padding:8px;border-radius:8px;cursor:pointer;
-    display:inline-flex;align-items:center;justify-content:center;
-  }
-  button.icon-btn:hover{ background:var(--glass); }
-
-  .searchbar {
-    width:100%;
-    max-width:700px;
-    margin:14px auto 22px;
-    display:flex;
-    gap:10px;
-    align-items:center;
-  }
-
-  .searchbar input{
-    width:100%;
-    padding:12px 16px;
-    border-radius:12px;
-    border:2px solid rgba(255,140,0,0.15);
-    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
-    font-size:0.95rem;
-  }
-
-  .container{
-    max-width:1200px;margin:0 auto;padding:18px;
-  }
-
-  .class-selector-main{
-    display:flex;gap:10px;justify-content:center;margin:10px 0 20px;
-  }
-
-  .main-class-btn{ background:var(--card); border:2px solid var(--accent); padding:12px 20px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--accent); }
-  .main-class-btn.active{ background:var(--accent); color:var(--white); box-shadow: 0 8px 30px rgba(255,140,0,0.12); transform:translateY(-3px); }
-
-  .layout{
-    display:grid;
-    grid-template-columns: 1fr 360px;
-    gap:24px;
-    align-items:start;
-  }
-
-  @media(max-width:980px){
-    .layout{ grid-template-columns: 1fr; padding:0 10px; }
-    .sidebar { order:2; }
-  }
-
-  /* cards & grid */
-  .subject-grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-    gap:18px;
-  }
-
-  .subject-card{
-    background:var(--card);
-    border-radius:14px;
-    padding:18px;
-    border:2px solid var(--accent);
-    box-shadow: 0 6px 22px rgba(0,0,0,0.15);
-    transition: transform .25s ease, box-shadow .25s ease;
-  }
-
-  .subject-card:hover{ transform: translateY(-6px); box-shadow: 0 14px 40px rgba(255,140,0,0.12); }
-
-  .subject-card h3{ display:flex; gap:10px; align-items:center; font-size:1.05rem; color:var(--accent); margin:0 0 12px; }
-  .subject-icon{ width:40px;height:40px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); font-weight:700; }
-
-  .content-list{ list-style:none;padding:0;margin:0; display:flex;flex-direction:column; gap:8px; }
-  .content-item{
-    padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff8e7,#fff4db);
-    display:flex;justify-content:space-between;align-items:center;border:1px solid var(--accent);
-    transition: all .18s ease;
-  }
-  .content-item:hover{ transform: translateX(6px); }
-
-  .download-btn{ background:var(--accent); color:var(--white); border:0;padding:8px 12px;border-radius:8px; cursor:pointer; font-weight:600; }
-  .download-btn:hover{ opacity:0.95; }
-
-  /* upload/request UI improvements */
-  .upload-section,.request-form-section,.requests-list-section{
-    background:var(--card); padding:16px;border-radius:12px;border:2px solid var(--accent); box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  }
-
-  label{ font-weight:600;color:var(--muted); display:block;margin-bottom:6px; }
-  input,select,textarea{ width:100%; padding:10px;border-radius:8px;border:2px solid var(--accent); background:#fff8e7; font-size:0.95rem; }
-  textarea{ min-height:90px; resize:vertical; }
-
-  .submit-btn{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); border:0;padding:10px 16px;border-radius:10px; cursor:pointer; font-weight:700; }
-
-  .success-msg{ display:none; padding:10px;border-radius:8px;background:var(--success); color:#155724;border:1px solid rgba(21,87,36,0.08); margin-top:10px; }
-
-  /* sidebar */
-  .sidebar{ display:flex; flex-direction:column; gap:14px; position:sticky; top:84px; align-self:start; }
-
-  .card-mini{ padding:12px;border-radius:12px;background:linear-gradient(90deg,var(--card),#fffaf0); border:2px solid rgba(255,140,0,0.12); }
-
-  .requests-list{ max-height:420px; overflow:auto; display:flex;flex-direction:column; gap:12px; }
-
-  .request-card{ background:#fff8e7; padding:12px;border-radius:10px;border:1px solid var(--accent); }
-
-  .chip{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:var(--accent); color:var(--white); font-weight:700; }
-
-  /* chatbot */
-  .chat-toggle{
-    position:fixed; right:22px; bottom:22px; z-index:80; display:flex; flex-direction:column; gap:10px;
-  }
-  .chat-btn{
-    width:64px;height:64px;border-radius:14px;border:0;background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); font-size:20px; cursor:pointer; box-shadow:0 20px 50px rgba(255,140,0,0.18);
-  }
-  .chat-window{
-    width:340px; max-width:92vw; height:460px; border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.3);
-    background:linear-gradient(180deg,var(--card),#fffaf0); display:flex; flex-direction:column; border:2px solid var(--accent);
-  }
-  .chat-header{ padding:12px 14px; display:flex; gap:12px; align-items:center; border-bottom:1px solid rgba(255,140,0,0.12); }
-  .chat-messages{ flex:1; padding:12px; overflow:auto; display:flex; flex-direction:column; gap:10px; }
-  .chat-input{ padding:10px; border-top:1px solid rgba(255,140,0,0.06); display:flex; gap:8px; }
-  .msg{ max-width:80%; padding:10px 12px; border-radius:10px; font-size:0.95rem; line-height:1.3; }
-  .msg.bot{ background:#fff; align-self:flex-start; border:1px solid rgba(0,0,0,0.05); }
-  .msg.user{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:var(--white); align-self:flex-end; }
-
-  /* subtle animations */
-  .fade-in{ animation:fadeIn .35s ease both; }
-  @keyframes fadeIn{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
-  .small{ font-size:0.85rem; color:var(--muted); }
-
-  footer{ text-align:center; margin:30px 0 10px; color:var(--muted); font-size:0.9rem; }
-</style>
+    #chapters-container li {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+  </style>
 </head>
-
 <body>
-  <header class="app-header">
-    <div class="brand">
-      <div class="logo">SS</div>
-      <div>
-        <div class="title">School Study Portal</div>
-        <div class="tagline small">Share Knowledge • Excel Together</div>
-      </div>
-    </div>
 
-    <div class="controls">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <button class="icon-btn" id="themeToggle" title="Toggle dark / light"><i class="fa fa-moon fa-lg"></i></button>
-      </div>
-    </div>
-  </header>
+  <h1>School Study Portal</h1>
 
-  <main class="container">
-    <!-- Search -->
-    <div class="searchbar fade-in">
-      <input id="globalSearch" placeholder="Search notes, questions, topics... try: 'Class 10 Electricity' or 'Polynomials'">
-      <button class="submit-btn" id="searchClear">Clear</button>
-    </div>
-
-    <!-- Class selector -->
-    <div class="class-selector-main">
-      <button class="main-class-btn active" data-class="9">Class 9</button>
-      <button class="main-class-btn" data-class="10">Class 10</button>
-    </div>
-
-    <div class="layout">
-      <!-- Main content -->
-      <section>
-        <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button class="tab-btn icon-btn active" data-tab="notes" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">📝 Notes</button>
-            <button class="tab-btn icon-btn" data-tab="questions" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">❓ Questions</button>
-            <button class="tab-btn icon-btn" data-tab="requests" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">🙋 Requests</button>
-            <button class="tab-btn icon-btn" data-tab="upload" style="padding:8px 12px;background:var(--card);border-radius:10px;border:2px solid var(--accent);">⬆️ Upload</button>
-          </div>
-
-          <div class="small">Tip: Use the search to quickly locate content. Chat with <b>StudyMate</b> for suggestions.</div>
-        </div>
-
-        <!-- NOTES tab content -->
-        <div id="notesTab" class="fade-in content-area">
-          <div class="subject-grid" id="notesGrid">
-            <!-- dynamic cards inserted here -->
-          </div>
-        </div>
-
-        <!-- QUESTIONS tab -->
-        <div id="questionsTab" class="fade-in content-area" style="display:none;">
-          <div class="subject-grid" id="questionsGrid"></div>
-        </div>
-
-        <!-- REQUESTS tab -->
-        <div id="requestsTab" class="fade-in content-area" style="display:none;">
-          <div style="display:grid;grid-template-columns:1fr;gap:12px;">
-            <div class="request-form-section">
-              <h3>Request Study Material</h3>
-              <form id="requestForm">
-                <label>Subject</label>
-                <select id="reqSubject" required>
-                  <option value="">Select Subject</option>
-                  <option value="mathematics">Mathematics</option>
-                  <option value="physics">Physics</option>
-                  <option value="chemistry">Chemistry</option>
-                  <option value="biology">Biology</option>
-                  <option value="social">Social Science</option>
-                  <option value="english">English</option>
-                  <option value="ai">Artificial Intelligence</option>
-                </select>
-
-                <label style="margin-top:10px">Type</label>
-                <select id="reqType" required>
-                  <option value="notes">Notes</option>
-                  <option value="questions">Important Questions</option>
-                  <option value="both">Both</option>
-                </select>
-
-                <label style="margin-top:10px">Topic / Chapter</label>
-                <input id="reqTopic" placeholder="e.g., Quadratic Equations" required>
-
-                <label style="margin-top:10px">Details</label>
-                <textarea id="reqDetails" placeholder="Describe what you want..."></textarea>
-
-                <label style="margin-top:10px">Your name</label>
-                <input id="reqName" placeholder="Your name (optional)">
-
-                <div style="margin-top:12px;display:flex;gap:10px;">
-                  <button class="submit-btn" type="submit">Post Request</button>
-                  <button class="submit-btn" type="button" id="suggestFromAI">Suggest with StudyMate</button>
-                </div>
-
-                <div class="success-msg" id="requestSuccess">✅ Request posted! Visible in active requests.</div>
-              </form>
-            </div>
-
-            <div class="requests-list-section">
-              <h3>Active Requests</h3>
-              <div id="activeRequests" class="requests-list"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- UPLOAD tab -->
-        <div id="uploadTab" class="fade-in content-area" style="display:none;">
-          <div class="upload-section">
-            <h3>Upload Study Material</h3>
-            <form id="uploadForm">
-              <label>Content Type</label>
-              <select id="contentType" required>
-                <option value="">Select Type</option>
-                <option value="notes">Notes</option>
-                <option value="questions">Important Questions</option>
-              </select>
-
-              <label style="margin-top:10px">Subject</label>
-              <select id="subject" required>
-                <option value="">Select Subject</option>
-                <option value="mathematics">Mathematics</option>
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
-                <option value="biology">Biology</option>
-                <option value="social">Social Science</option>
-                <option value="english">English</option>
-                <option value="ai">Artificial Intelligence</option>
-              </select>
-
-              <label style="margin-top:10px">Title</label>
-              <input id="title" placeholder="e.g., Light - Reflection & Refraction" required>
-
-              <label style="margin-top:10px">Description</label>
-              <textarea id="description" placeholder="Short description..."></textarea>
-
-              <label style="margin-top:10px">Upload File (optional)</label>
-              <input id="fileInput" type="file" accept=".pdf,.docx,.pptx,.txt" />
-
-              <label style="margin-top:10px">Your Name</label>
-              <input id="uploader" placeholder="Your name">
-
-              <div style="margin-top:12px;display:flex;gap:10px;">
-                <button class="submit-btn" type="submit">Upload</button>
-                <button class="submit-btn" type="button" id="autoCatBtn">Auto-categorize</button>
-              </div>
-
-              <div class="success-msg" id="uploadSuccess">✅ Uploaded and saved locally.</div>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <!-- SIDEBAR -->
-      <aside class="sidebar">
-        <div class="card-mini">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div><strong>Quick Filters</strong><div class="small">Click to filter</div></div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-            <button class="chip" data-filter="mathematics">Math</button>
-            <button class="chip" data-filter="physics">Physics</button>
-            <button class="chip" data-filter="chemistry">Chem</button>
-            <button class="chip" data-filter="biology">Bio</button>
-            <button class="chip" data-filter="social">Social</button>
-            <button class="chip" data-filter="english">English</button>
-            <button class="chip" data-filter="ai">AI</button>
-          </div>
-        </div>
-
-        <div class="card-mini">
-          <h4>Active Requests</h4>
-          <div id="miniRequests" class="small"></div>
-        </div>
-
-        <div class="card-mini">
-          <h4>Shortcuts</h4>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
-            <button class="submit-btn" id="goNotes">Go to Notes</button>
-            <button class="submit-btn" id="goUpload">Go to Upload</button>
-          </div>
-        </div>
-      </aside>
-    </div>
-
-    <footer>Made with ❤️ for students • StudyMate powered suggestions</footer>
-  </main>
-
-  <!-- Chatbot UI -->
-  <div class="chat-toggle" id="chatRoot">
-    <div id="chatWindow" style="display:none;" class="chat-window fade-in">
-      <div class="chat-header">
-        <div style="display:flex;gap:10px;align-items:center;">
-          <div style="width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:10px;color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;">SM</div>
-          <div>
-            <div style="font-weight:700;color:var(--accent)">StudyMate AI</div>
-            <div class="small">Your friendly study assistant</div>
-          </div>
-        </div>
-        <div style="margin-left:auto;">
-          <button class="icon-btn" id="closeChat"><i class="fa fa-times"></i></button>
-        </div>
-      </div>
-
-      <div class="chat-messages" id="chatMessages">
-        <div class="msg bot">Hi! I’m <b>StudyMate</b>. Ask me for topic suggestions, quick notes, or type "recommend" to get study tips.</div>
-      </div>
-
-      <div class="chat-input">
-        <input id="chatInput" placeholder="Ask StudyMate (e.g., 'suggest notes for quadratic equations')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
-        <button class="submit-btn" id="sendChat">Send</button>
-      </div>
-    </div>
-
-    <button id="openChat" class="chat-btn" title="Open StudyMate"><i class="fa fa-comments fa-lg"></i></button>
+  <!-- Subject Buttons -->
+  <div class="subject-container">
+    <button class="subject-btn" onclick="showOptions('Math')">Math</button>
+    <button class="subject-btn" onclick="showOptions('Physics')">Physics</button>
+    <button class="subject-btn" onclick="showOptions('Chemistry')">Chemistry</button>
+    <button class="subject-btn" onclick="showOptions('Biology')">Biology</button>
+    <button class="subject-btn" onclick="showOptions('History')">History</button>
+    <button class="subject-btn" onclick="showOptions('Political Science')">Political Science</button>
+    <button class="subject-btn" onclick="showOptions('Geography')">Geography</button>
+    <button class="subject-btn" onclick="showOptions('Artificial Intelligence')">Artificial Intelligence</button>
   </div>
 
-<script>
-/* ========== Data store (localStorage) ========== */
-const STORE_KEYS = { notes: 'ss_notes_v1', questions: 'ss_questions_v1', requests:'ss_requests_v1', theme:'ss_theme' };
-const defaultNotes = [
-  { id: genId(), class:9, subject:'mathematics', title:'Polynomials', desc:'Concepts & practice', file:null },
-  { id: genId(), class:9, subject:'physics', title:'Motion', desc:'Kinematics basics', file:null },
-  { id: genId(), class:10, subject:'physics', title:'Light - Reflection & Refraction', desc:'Complete notes with diagrams', file:null },
-  { id: genId(), class:10, subject:'mathematics', title:'Quadratic Equations', desc:'Formulas & practice', file:null }
-];
+  <!-- Options Section -->
+  <div id="options-container" style="display:none; text-align:center; margin-top:50px;">
+    <h1 id="subject-title"></h1>
+    <button class="option-btn" onclick="showChapters('Important Questions')">Important Questions</button>
+    <button class="option-btn" onclick="showChapters('Notes')">Notes</button>
+  </div>
 
-const defaultQuestions = [
-  { id: genId(), class:9, subject:'mathematics', title:'Number Systems - Practice', desc:'MCQs & short answers' },
-  { id: genId(), class:10, subject:'physics', title:'Light - Numericals', desc:'Reflection / Refraction problems' }
-];
+  <!-- Chapters Section -->
+  <div id="chapters-container">
+    <h2 id="section-title"></h2>
+    <ol id="chapters-list"></ol>
+  </div>
 
-function genId(){ return 'id_' + Math.random().toString(36).slice(2,9); }
+  <script>
+    // Chapters data
+    const chapters = {
+      Math: ['Real Numbers', 'Polynomials', 'Pair of Linear Equations', 'Quadratic Equations', 'Arithmetic Progressions'],
+      Physics: ['Light – Reflection and Refraction', 'The Human Eye and the Colourful World', 'Electricity', 'Magnetic Effects of Current', 'Sources of Energy'],
+      Chemistry: ['Chemical Reactions and Equations', 'Acids, Bases and Salts', 'Metals and Non-Metals', 'Carbon and its Compounds', 'Periodic Classification of Elements'],
+      Biology: ['Life Processes', 'Control and Coordination', 'How do Organisms Reproduce?', 'Heredity and Evolution', 'Our Environment'],
+      History: ['Rise of Nationalism in Europe', 'Industrial Revolution', 'World Wars', 'Colonialism and Nationalism'],
+      'Political Science': ['Federalism', 'Democracy and Diversity', 'Politics in India Today'],
+      Geography: ['Resources and Development', 'Water Resources', 'Agriculture', 'Minerals and Energy Resources'],
+      'Artificial Intelligence': ['Introduction to AI', 'Machine Learning Basics', 'Applications of AI', 'Ethics in AI']
+    };
 
-function loadStore(key, fallback){
-  try{
-    const v = localStorage.getItem(key);
-    if(!v && fallback!==undefined) { localStorage.setItem(key, JSON.stringify(fallback)); return fallback; }
-    return v ? JSON.parse(v) : fallback;
-  } catch(e){ console.error(e); return fallback; }
-}
-function saveStore(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+    let selectedSubject = '';
 
-/* initialize stores if empty */
-if(!localStorage.getItem(STORE_KEYS.notes)) saveStore(STORE_KEYS.notes, defaultNotes);
-if(!localStorage.getItem(STORE_KEYS.questions)) saveStore(STORE_KEYS.questions, defaultQuestions);
-if(!localStorage.getItem(STORE_KEYS.requests)) saveStore(STORE_KEYS.requests, []);
+    function showOptions(subject) {
+      selectedSubject = subject;
+      document.getElementById('subject-title').innerText = subject;
+      document.getElementById('options-container').style.display = 'block';
+      document.getElementById('chapters-container').style.display = 'none';
+      document.getElementById('options-container').scrollIntoView({ behavior: 'smooth' });
+    }
 
-/* ========== App state ========== */
-let activeClass = 9;
-let activeTab = 'notes'; // notes, questions, requests, upload
+    function showChapters(section) {
+      const chaptersList = chapters[selectedSubject] || [];
+      const listContainer = document.getElementById('chapters-list');
+      listContainer.innerHTML = '';
 
-/* UI refs */
-const notesGrid = document.getElementById('notesGrid');
-const questionsGrid = document.getElementById('questionsGrid');
-const activeRequests = document.getElementById('activeRequests');
-const miniRequests = document.getElementById('miniRequests');
+      chaptersList.forEach((chapter, index) => {
+        const li = document.createElement('li');
+        li.innerText = `${index + 1}. ${chapter}`;
+        listContainer.appendChild(li);
+      });
 
-const tabs = document.querySelectorAll('.tab-btn');
-const classBtns = document.querySelectorAll('.main-class-btn');
-const searchInput = document.getElementById('globalSearch');
-const searchClear = document.getElementById('searchClear');
-const filterChips = document.querySelectorAll('.chip');
-const themeToggle = document.getElementById('themeToggle');
+      document.getElementById('section-title').innerText = `${selectedSubject} - ${section}`;
+      document.getElementById('chapters-container').style.display = 'block';
+      document.getElementById('chapters-container').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
 
-/* ========== Theme handling ========== */
-function applyTheme(theme){
-  if(theme === 'light'){ document.documentElement.classList.add('light'); themeToggle.innerHTML = '<i class="fa fa-sun"></i>'; }
-  else { document.documentElement.classList.remove('light'); themeToggle.innerHTML = '<i class="fa fa-moon"></i>'; }
-  localStorage.setItem(STORE_KEYS.theme, theme);
-}
-const savedTheme = localStorage.getItem(STORE_KEYS.theme) || 'dark';
-applyTheme(savedTheme);
-
-themeToggle.addEventListener('click', ()=> applyTheme(document.documentElement.classList.contains('light') ? 'dark' : 'light'));
-
-/* ========== Rendering functions ========== */
-function renderNotes(){
-  const all = loadStore(STORE_KEYS.notes, []);
-  const filtered = all.filter(n => n.class === +activeClass);
-  notesGrid.innerHTML = '';
-  const grouped = groupBy(filtered, 'subject');
-  // Render each subject as a card
-  for(const subj of Object.keys(grouped)){
-    const items = grouped[subj];
-    const card = document.createElement('div'); card.className='subject-card';
-    card.innerHTML = `<h3><span class="subject-icon">${emojiForSub(subj)}</span> ${capitalize(subj)}</h3>
-      <ul class="content-list">${items.map(it => `<li class="content-item"><span>${it.title} <div class="small" style="display:block">${it.desc||''}</div></span><div style="display:flex;gap:8px;align-items:center"><button class="download-btn" data-id="${it.id}">Open</button></div></li>`).join('')}</ul>`;
-    notesGrid.appendChild(card);
-  }
-  // hook download/open buttons
-  notesGrid.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
-    const id = e.currentTarget.dataset.id;
-    const it = all.find(x=>x.id===id);
-    if(it) alert(`Open: ${it.title}\n\nDescription: ${it.desc || '(none)'}\n\nNote: This demo opens a dialog; integrate a backend for real files.`);
-  }));
-}
-
-function renderQuestions(){
-  const all = loadStore(STORE_KEYS.questions, []);
-  const filtered = all.filter(q => q.class === +activeClass);
-  questionsGrid.innerHTML='';
-  const grouped = groupBy(filtered, 'subject');
-  for(const subj of Object.keys(grouped)){
-    const items = grouped[subj];
-    const card = document.createElement('div'); card.className='subject-card';
-    card.innerHTML = `<h3><span class="subject-icon">${emojiForSub(subj)}</span> ${capitalize(subj)}</h3>
-      <ul class="content-list">${items.map(it => `<li class="content-item"><span>${it.title}<div class="small" style="display:block">${it.desc||''}</div></span><div><button class="download-btn" data-qid="${it.id}">Open</button></div></li>`).join('')}</ul>`;
-    questionsGrid.appendChild(card);
-  }
-  questionsGrid.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
-    const id = e.currentTarget.dataset.qid;
-    const it = loadStore(STORE_KEYS.questions,[]).find(x=>x.id===id);
-    if(it) alert(`Open question set: ${it.title}\n\n${it.desc||''}`);
-  }));
-}
-
-function renderRequests(){
-  const requests = loadStore(STORE_KEYS.requests,[]);
-  activeRequests.innerHTML = '';
-  miniRequests.innerHTML = '';
-  if(requests.length===0){ activeRequests.innerHTML = '<div class="small">No active requests yet.</div>'; miniRequests.innerHTML = '<div class="small">No requests</div>'; return; }
-  requests.slice().reverse().forEach(r => {
-    const rc = document.createElement('div'); rc.className='request-card';
-    rc.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">${capitalize(r.subject)} • <span class="small">${capitalize(r.type)}</span></div><div class="small">${timeAgo(r.created)}</div></div>
-      <h4 style="margin:8px 0 6px">${r.topic}</h4><p style="margin:0">${r.details}</p>
-      <div style="margin-top:8px;display:flex;gap:8px;justify-content:space-between;align-items:center">
-        <div class="small">Requested by: ${r.name||'Anonymous'}</div>
-        <div><button class="submit-btn" data-help="${r.id}">I can help</button></div>
-      </div>`;
-    activeRequests.appendChild(rc);
-
-    // mini representation
-    const mini = document.createElement('div'); mini.className='small'; mini.innerText = `${capitalize(r.subject)}: ${r.topic} — ${r.name||'Anonymous'}`;
-    miniRequests.appendChild(mini);
-  });
-
-  // help buttons
-  activeRequests.querySelectorAll('[data-help]').forEach(b => b.addEventListener('click', (e)=> {
-    const id = e.currentTarget.dataset.help;
-    alert('Thanks! Marking as answered locally (demo). In a real app this would notify the requester.');
-    // remove request locally for demo:
-    let rs = loadStore(STORE_KEYS.requests, []);
-    rs = rs.filter(x=>x.id!==id);
-    saveStore(STORE_KEYS.requests, rs);
-    renderRequests();
-  }));
-}
-
-/* ========== Utilities ========== */
-function groupBy(arr, key){
-  return arr.reduce((acc,item)=>{ const k = item[key]||'other'; (acc[k]||(acc[k]=[])).push(item); return acc; }, {});
-}
-function capitalize(s){ if(!s) return s; return s.charAt(0).toUpperCase()+s.slice(1); }
-function emojiForSub(sub){
-  const map = { mathematics:'📐', physics:'🔬', chemistry:'🧪', biology:'🧬', social:'🌍', english:'📖', ai:'🤖' };
-  return map[sub] || '📚';
-}
-function timeAgo(ts){ const d = new Date(ts); const diff = (Date.now()-d.getTime())/1000; if(diff<60) return Math.floor(diff)+'s ago'; if(diff<3600) return Math.floor(diff/60)+'m ago'; if(diff<86400) return Math.floor(diff/3600)+'h ago'; return d.toLocaleString(); }
-
-/* ========== Initial render ========== */
-renderAll();
-
-/* ========== Interaction: tabs & class selection ========== */
-tabs.forEach(t => t.addEventListener('click', (e)=> {
-  tabs.forEach(x=>x.classList.remove('active'));
-  e.currentTarget.classList.add('active');
-  const tab = e.currentTarget.dataset.tab;
-  setActiveTab(tab);
-}));
-
-classBtns.forEach(btn => btn.addEventListener('click', (e)=>{
-  classBtns.forEach(b=>b.classList.remove('active'));
-  e.currentTarget.classList.add('active');
-  activeClass = +e.currentTarget.dataset.class;
-  renderAll();
-}));
-
-function setActiveTab(tab){
-  activeTab = tab;
-  document.getElementById('notesTab').style.display = (tab==='notes') ? '' : 'none';
-  document.getElementById('questionsTab').style.display = (tab==='questions') ? '' : 'none';
-  document.getElementById('requestsTab').style.display = (tab==='requests') ? '' : 'none';
-  document.getElementById('uploadTab').style.display = (tab==='upload') ? '' : 'none';
-}
-
-/* ========== Search ======== */
-searchInput.addEventListener('input', ()=> applySearch(searchInput.value));
-searchClear.addEventListener('click', ()=> { searchInput.value=''; applySearch(''); });
-
-function applySearch(q){
-  q = (q||'').trim().toLowerCase();
-  if(q==='') { renderAll(); return; }
-  // search both notes and questions
-  const notes = loadStore(STORE_KEYS.notes,[]).filter(n => (n.class===activeClass) && ((n.title||'').toLowerCase().includes(q) || (n.desc||'').toLowerCase().includes(q) || (n.subject||'').toLowerCase().includes(q)));
-  const questions = loadStore(STORE_KEYS.questions,[]).filter(n => (n.class===activeClass) && ((n.title||'').toLowerCase().includes(q) || (n.desc||'').toLowerCase().includes(q) || (n.subject||'').toLowerCase().includes(q)));
-  // render results as cards
-  notesGrid.innerHTML=''; questionsGrid.innerHTML='';
-  if(notes.length>0){
-    const card = document.createElement('div'); card.className='subject-card';
-    card.innerHTML = `<h3><span class="subject-icon">🔎</span> Search Results — Notes</h3><ul class="content-list">${notes.map(it=>`<li class="content-item"><span>${it.title} <div class="small">${it.subject} • class ${it.class}</div></span><div><button class="download-btn" data-id="${it.id}">Open</button></div></li>`).join('')}</ul>`;
-    notesGrid.appendChild(card);
-    card.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
-      const id = e.currentTarget.dataset.id;
-      const it = loadStore(STORE_KEYS.notes,[]).find(x=>x.id===id);
-      if(it) alert(`${it.title}\n\n${it.desc||''}`);
-    }));
-  }
-  if(questions.length>0){
-    const card = document.createElement('div'); card.className='subject-card';
-    card.innerHTML = `<h3><span class="subject-icon">🔎</span> Search Results — Questions</h3><ul class="content-list">${questions.map(it=>`<li class="content-item"><span>${it.title} <div class="small">${it.subject} • class ${it.class}</div></span><div><button class="download-btn" data-qid="${it.id}">Open</button></div></li>`).join('')}</ul>`;
-    questionsGrid.appendChild(card);
-    card.querySelectorAll('.download-btn').forEach(b => b.addEventListener('click', (e)=> {
-      const id = e.currentTarget.dataset.qid;
-      const it = loadStore(STORE_KEYS.questions,[]).find(x=>x.id===id);
-      if(it) alert(`${it.title}\n\n${it.desc||''}`);
-    }));
-  }
-}
-
-/* ========== Quick filters ======== */
-filterChips.forEach(c => c.addEventListener('click', (e)=> {
-  const f = e.currentTarget.dataset.filter;
-  searchInput.value = f;
-  applySearch(f);
-}));
-
-/* ========== Upload/Auto-categorization ======== */
-const autoKeywords = {
-  mathematics: ["polynomial","quadratic","trigonometry","number","algebra","geometry"],
-  physics: ["motion","force","light","electricity","magnetic","refraction","reflection","kinematics","ohm"],
-  chemistry: ["acid","base","reaction","salt","metal","non-metal","molecule","atom"],
-  biology: ["cell","tissues","life","heredity","evolution","diagram","photosynthesis"],
-  social: ["nationalism","resources","federalism","map","history","geography"],
-  english: ["beehive","moments","poem","prose","grammar","letter"],
-  ai: ["machine learning","neural","data","ai","algorithm","model"]
-};
-
-document.getElementById('autoCatBtn').addEventListener('click', ()=>{
-  const title = (document.getElementById('title').value||'').toLowerCase();
-  const desc = (document.getElementById('description').value||'').toLowerCase();
-  const text = title + ' ' + desc;
-  let best=null, score=0;
-  Object.keys(autoKeywords).forEach(sub=>{
-    let s = 0;
-    autoKeywords[sub].forEach(k => { if(text.includes(k)) s++; });
-    if(s>score){ score=s; best=sub; }
-  });
-  if(best){
-    document.getElementById('subject').value = best;
-    // if title contained keywords, suggest contentType
-    if(text.includes('question')||text.includes('practice')||text.includes('numerical')) document.getElementById('contentType').value='questions';
-    else document.getElementById('contentType').value='notes';
-    alert(`Auto-categorized as: ${capitalize(best)} (${score} keyword match${score>1?'es':''})`);
-  } else alert('Could not auto-categorize — try adding a more descriptive title/description.');
-});
-
-document.getElementById('uploadForm').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const ct = document.getElementById('contentType').value;
-  const subj = document.getElementById('subject').value;
-  const title = document.getElementById('title').value;
-  const desc = document.getElementById('description').value;
-  const file = document.getElementById('fileInput').files[0] || null;
-  const name = document.getElementById('uploader').value || 'Anonymous';
-  if(!ct || !subj || !title) return alert('Please fill required fields.');
-  const item = { id: genId(), class: activeClass, subject: subj, title, desc, fileName: file?file.name:null, uploader:name, created:Date.now() };
-  if(ct==='notes'){ const arr = loadStore(STORE_KEYS.notes,[]); arr.push(item); saveStore(STORE_KEYS.notes, arr); }
-  else { const arr = loadStore(STORE_KEYS.questions,[]); arr.push(item); saveStore(STORE_KEYS.questions, arr); }
-  document.getElementById('uploadSuccess').style.display='block';
-  setTimeout(()=> document.getElementById('uploadSuccess').style.display='none', 2500);
-  document.getElementById('uploadForm').reset();
-  renderAll();
-});
-
-/* ========== Requests handling ======== */
-document.getElementById('requestForm').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const subj = document.getElementById('reqSubject').value;
-  const type = document.getElementById('reqType').value;
-  const topic = document.getElementById('reqTopic').value;
-  const details = document.getElementById('reqDetails').value;
-  const name = document.getElementById('reqName').value || 'Anonymous';
-  if(!subj || !topic) return alert('Please fill subject and topic.');
-  const req = { id: genId(), subject:subj, type, topic, details, name, created: Date.now() };
-  const arr = loadStore(STORE_KEYS.requests,[]); arr.push(req); saveStore(STORE_KEYS.requests, arr);
-  document.getElementById('requestSuccess').style.display='block';
-  setTimeout(()=> document.getElementById('requestSuccess').style.display='none', 2500);
-  document.getElementById('requestForm').reset();
-  renderRequests();
-});
-
-/* ========== Suggest with StudyMate (button in requests) ========= */
-document.getElementById('suggestFromAI').addEventListener('click', ()=>{
-  const topic = document.getElementById('reqTopic').value || '';
-  const subj = document.getElementById('reqSubject').value || '';
-  const q = `${topic} ${subj}`.trim();
-  openChat();
-  postUserMessage(`Suggest for: ${q}`);
-  setTimeout(()=> studyMateReplyFor(q), 600);
-});
-
-/* ========== Chatbot logic (StudyMate AI) ========== */
-const openChatBtn = document.getElementById('openChat');
-const chatWindow = document.getElementById('chatWindow');
-const closeChatBtn = document.getElementById('closeChat');
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-const sendChat = document.getElementById('sendChat');
-
-openChatBtn.addEventListener('click', openChat);
-closeChatBtn.addEventListener('click', closeChat);
-sendChat.addEventListener('click', ()=> { const v = chatInput.value.trim(); if(!v) return; postUserMessage(v); chatInput.value=''; setTimeout(()=> studyMateReplyFor(v), 600); });
-chatInput.addEventListener('keypress', (e)=> { if(e.key==='Enter'){ e.preventDefault(); sendChat.click(); } });
-
-function openChat(){ openChatBtn.style.display='none'; chatWindow.style.display='flex'; chatInput.focus(); }
-function closeChat(){ openChatBtn.style.display='inline-flex'; chatWindow.style.display='none'; }
-
-function postUserMessage(text){
-  const m = document.createElement('div'); m.className='msg user'; m.innerText = text; chatMessages.appendChild(m); chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function postBotMessage(html){
-  const m = document.createElement('div'); m.className='msg bot'; m.innerHTML = html; chatMessages.appendChild(m); chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-/* StudyMate's reply generator (simple but useful) */
-function studyMateReplyFor(input){
-  input = (input||'').toLowerCase();
-  if(!input) { postBotMessage("Tell me what topic or chapter you'd like help with — e.g., 'polynomials' or 'electricity numericals'."); return; }
-
-  // basic commands
-  if(input.includes('recommend') || input.includes('tips')){
-    return postBotMessage(`<b>Study tips:</b><ul><li>Break study into 25-min focused Pomodoro sessions.</li><li>Revise older topics every 3 days.</li><li>Attempt previous year papers under timed conditions.</li></ul>`);
-  }
-
-  // look for keywords to recommend notes from local storage
-  const bestMatches = [];
-  const notes = loadStore(STORE_KEYS.notes,[]);
-  const q = input.replace(/[^a-z0-9 ]/g,'');
-  notes.forEach(n => {
-    const score = ((n.title||'')+ ' ' + (n.desc||'') + ' ' + (n.subject||'')).toLowerCase().split(' ').reduce((s,w)=> s + (q.includes(w) ? 1:0), 0);
-    if(score>0) bestMatches.push({score, n});
-  });
-  bestMatches.sort((a,b)=>b.score-a.score);
-
-  if(bestMatches.length>0){
-    const top = bestMatches.slice(0,4).map(x=>`<div style="padding:6px;border-radius:8px;border:1px dashed rgba(0,0,0,0.05);margin-bottom:6px;"><b>${x.n.title}</b><div class="small">${capitalize(x.n.subject)} • class ${x.n.class}</div><div class="small">${x.n.desc||''}</div></div>`).join('');
-    postBotMessage(`<b>Here are locally available resources I found:</b><div style="margin-top:8px">${top}</div><div class="small">Tip: Upload more notes to improve recommendations.</div>`);
-    return;
-  }
-
-  // if nothing local, provide study plan summary
-  const fallbackPlan = generateStudyPlan(input);
-  postBotMessage(`<b>Study plan for "${input}":</b><div style="margin-top:6px">${fallbackPlan}</div>`);
-}
-
-function generateStudyPlan(topic){
-  return `<ol style="margin:6px 0 0 16px">
-    <li>Read core concepts (20–30 min)</li>
-    <li>Make concise one-page notes (15 min)</li>
-    <li>Solve 5–10 practice problems (30 min)</li>
-    <li>Review mistakes & mark weak points (20 min)</li>
-  </ol><div class="small" style="margin-top:6px">Pro tip: After two days, test yourself again for retention.</div>`;
-}
-
-/* ========== Render helper: renderAll ========= */
-function renderAll(){ renderNotes(); renderQuestions(); renderRequests(); }
-
-/* ========== Misc: shortcuts ======= */
-document.getElementById('goNotes').addEventListener('click', ()=> { setActiveTab('notes'); });
-document.getElementById('goUpload').addEventListener('click', ()=> { setActiveTab('upload'); });
-
-/* ========== Mini: suggestion from StudyMate when opening chat ========= */
-openChat(); // open by default once to show message, then close quickly
-setTimeout(()=> closeChat(), 1600);
-
-/* ========== Helpful UI wiring ======= */
-document.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', (e)=>{
-  const f = e.currentTarget.dataset.filter;
-  searchInput.value = f;
-  applySearch(f);
-}));
-
-/* ========== small helper to seed some visual content if empty ========== */
-(function seedIfEmpty(){
-  const notes = loadStore(STORE_KEYS.notes,[]);
-  if(notes.length===0){ saveStore(STORE_KEYS.notes, defaultNotes); }
-  const q = loadStore(STORE_KEYS.questions,[]);
-  if(q.length===0) saveStore(STORE_KEYS.questions, defaultQuestions);
-  renderAll();
-})();
-</script>
 </body>
 </html>
