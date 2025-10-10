@@ -519,31 +519,67 @@
                 <div class="subject-card" onclick="showFeatures('Mathematics')">
                     <div class="subject-icon">📐</div>
                     <h2>Mathematics</h2>
-                    <p>Formulas, Problems & Solutions</p>
+                    <p>Algebra, Calculus & Geometry</p>
                 </div>
 
-                <div class="subject-card" onclick="showFeatures('Science')">
-                    <div class="subject-icon">🔬</div>
-                    <h2>Science</h2>
-                    <p>Physics, Chemistry & Biology</p>
+                <div class="subject-card" onclick="showFeatures('Physics')">
+                    <div class="subject-icon">⚛️</div>
+                    <h2>Physics</h2>
+                    <p>Mechanics, Waves & Optics</p>
                 </div>
 
-                <div class="subject-card" onclick="showFeatures('Social Studies')">
+                <div class="subject-card" onclick="showFeatures('Chemistry')">
+                    <div class="subject-icon">🧪</div>
+                    <h2>Chemistry</h2>
+                    <p>Organic, Inorganic & Physical</p>
+                </div>
+
+                <div class="subject-card" onclick="showFeatures('Biology')">
+                    <div class="subject-icon">🧬</div>
+                    <h2>Biology</h2>
+                    <p>Botany, Zoology & Ecology</p>
+                </div>
+
+                <div class="subject-card" onclick="showFeatures('Political Science')">
+                    <div class="subject-icon">🏛️</div>
+                    <h2>Political Science</h2>
+                    <p>Government & Politics</p>
+                </div>
+
+                <div class="subject-card" onclick="showFeatures('Economics')">
+                    <div class="subject-icon">💰</div>
+                    <h2>Economics</h2>
+                    <p>Micro, Macro & Development</p>
+                </div>
+
+                <div class="subject-card" onclick="showFeatures('Geography')">
                     <div class="subject-icon">🌍</div>
-                    <h2>Social Studies</h2>
-                    <p>History, Geography & Civics</p>
+                    <h2>Geography</h2>
+                    <p>Physical & Human Geography</p>
                 </div>
 
-                <div class="subject-card" onclick="showFeatures('AI')">
-                    <div class="subject-icon">🤖</div>
-                    <h2>Artificial Intelligence</h2>
-                    <p>Modern Tech & Programming</p>
+                <div class="subject-card" onclick="showFeatures('History')">
+                    <div class="subject-icon">📜</div>
+                    <h2>History</h2>
+                    <p>Ancient, Medieval & Modern</p>
+                </div>
+
+                <div class="subject-card" onclick="showFeatures('Hindi')">
+                    <div class="subject-icon">🇮🇳</div>
+                    <h2>Hindi</h2>
+                    <p>व्याकरण, साहित्य और रचना</p>
                 </div>
 
                 <div class="subject-card" onclick="showFeatures('English')">
                     <div class="subject-icon">📚</div>
                     <h2>English</h2>
                     <p>Literature, Grammar & Writing</p>
+                </div>
+
+                <div class="subject-card" onclick="showFeatures('AI')">
+                    <div class="subject-icon">🤖</div>
+                    <h2>Artificial Intelligence</h2>
+                    <p>Machine Learning & Programming</p>
                 </div>
             </div>
         </div>
@@ -604,195 +640,7 @@
                     <div id="fileUploadMode">
                         <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
                             <div class="upload-icon">📤</div>
-                            <h3 style="color: #FFB347; margin-bottom: 0.5rem;">Upload Study Material</h3>
-                            <p style="color: #aaa;">Click to select or drag and drop files here</p>
-                            <p style="color: #888; font-size: 0.9rem; margin-top: 0.5rem;">Supported: PDF, DOC, DOCX, TXT, Images (Max 50MB)</p>
-                        </div>
-                        <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg" onchange="handleFileSelect(event)">
-                        <div id="fileInfo" style="display: none; margin-top: 1rem; padding: 1rem; background: #0d0d0d; border: 2px solid #FF8C00; border-radius: 8px;">
-                            <p style="color: #FFB347;">Selected: <span id="fileName"></span></p>
-                            <p style="color: #aaa;">Size: <span id="fileSize"></span></p>
-                        </div>
-                    </div>
-
-                    <div id="textUploadMode" style="display: none;">
-                        <textarea id="textEditor" class="text-editor" placeholder="Write your notes here...&#10;&#10;You can include:&#10;- Definitions&#10;- Formulas&#10;- Examples&#10;- Important points&#10;- Step-by-step solutions"></textarea>
-                    </div>
-
-                    <div class="admin-controls">
-                        <button class="upload-btn" onclick="uploadContent()">💾 Save & Upload</button>
-                        <button class="back-btn" onclick="cancelUpload()">❌ Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const API_URL = 'http://localhost:3000/api';
-        let currentSubject = '';
-        let currentFeature = '';
-        let currentChapter = 0;
-        let isEditMode = false;
-        let selectedFile = null;
-        let uploadMode = 'file';
-
-        const chapterConfig = {
-            'Mathematics': {
-                'Important Questions': 16,
-                'PYQs': 16,
-                'Worksheets': 16,
-                'Premium Handwritten Notes': 16
-            },
-            'Science': {
-                'Important Questions': 13,
-                'PYQs': 13,
-                'Worksheets': 13,
-                'Premium Handwritten Notes': 13
-            },
-            'Social Studies': {
-                'Important Questions': 20,
-                'PYQs': 20,
-                'Worksheets': 20,
-                'Premium Handwritten Notes': 20
-            },
-            'AI': {
-                'Important Questions': 10,
-                'PYQs': 10,
-                'Worksheets': 10,
-                'Premium Handwritten Notes': 10
-            },
-            'English': {
-                'Important Questions': 15,
-                'PYQs': 15,
-                'Worksheets': 15,
-                'Premium Handwritten Notes': 15
-            }
-        };
-
-        // Navigation functions
-        function showSubjects() {
-            document.getElementById('subjectsView').classList.add('active');
-            document.getElementById('featuresView').classList.remove('active');
-            document.getElementById('chaptersView').classList.remove('active');
-            document.getElementById('contentView').classList.remove('active');
-            document.getElementById('breadcrumb').innerHTML = '<span onclick="showSubjects()">Home</span>';
-        }
-
-        function showFeatures(subject) {
-            currentSubject = subject;
-            document.getElementById('subjectsView').classList.remove('active');
-            document.getElementById('featuresView').classList.add('active');
-            document.getElementById('chaptersView').classList.remove('active');
-            document.getElementById('contentView').classList.remove('active');
-            document.getElementById('subjectTitle').textContent = subject;
-            document.getElementById('breadcrumb').innerHTML = `
-                <span onclick="showSubjects()">Home</span> > <span>${subject}</span>
-            `;
-        }
-
-        async function showChapters(feature) {
-            currentFeature = feature;
-            document.getElementById('featuresView').classList.remove('active');
-            document.getElementById('chaptersView').classList.add('active');
-            document.getElementById('contentView').classList.remove('active');
-            document.getElementById('featureTitle').textContent = feature;
-            document.getElementById('chapterSubtitle').textContent = `${currentSubject} - Select a chapter`;
-            document.getElementById('breadcrumb').innerHTML = `
-                <span onclick="showSubjects()">Home</span> > 
-                <span onclick="showFeatures('${currentSubject}')">${currentSubject}</span> > 
-                <span>${feature}</span>
-            `;
-
-            const chaptersGrid = document.getElementById('chaptersGrid');
-            chaptersGrid.innerHTML = '';
-            
-            const numChapters = chapterConfig[currentSubject]?.[feature] || 20;
-            
-            for (let i = 1; i <= numChapters; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'chapter-btn';
-                btn.textContent = `Chapter ${i}`;
-                
-                // Check if content exists
-                const hasContent = await checkContentExists(currentSubject, feature, i);
-                if (hasContent) {
-                    btn.classList.add('has-content');
-                }
-                
-                btn.onclick = () => viewChapter(i);
-                chaptersGrid.appendChild(btn);
-            }
-        }
-
-        async function viewChapter(chapter) {
-            currentChapter = chapter;
-            document.getElementById('chaptersView').classList.remove('active');
-            document.getElementById('contentView').classList.add('active');
-            document.getElementById('contentTitle').textContent = `${currentSubject} - ${currentFeature} - Chapter ${chapter}`;
-            document.getElementById('breadcrumb').innerHTML = `
-                <span onclick="showSubjects()">Home</span> > 
-                <span onclick="showFeatures('${currentSubject}')">${currentSubject}</span> > 
-                <span onclick="showChapters('${currentFeature}')">${currentFeature}</span> >
-                <span>Chapter ${chapter}</span>
-            `;
-
-            if (isEditMode) {
-                showUploadInterface();
-            } else {
-                await loadContent();
-            }
-        }
-
-        function backToChapters() {
-            showChapters(currentFeature);
-        }
-
-        // Content management functions
-        async function checkContentExists(subject, feature, chapter) {
-            try {
-                const response = await fetch(`${API_URL}/content/${encodeURIComponent(subject)}/${encodeURIComponent(feature)}/${chapter}`);
-                const data = await response.json();
-                return data.success;
-            } catch (error) {
-                console.error('Error checking content:', error);
-                return false;
-            }
-        }
-
-        async function loadContent() {
-            const viewerArea = document.getElementById('viewerArea');
-            const adminArea = document.getElementById('adminUploadArea');
-            
-            viewerArea.innerHTML = '<p style="color: #aaa; text-align: center; padding: 2rem;">Loading content...</p>';
-            adminArea.style.display = 'none';
-
-            try {
-                const response = await fetch(`${API_URL}/content/${encodeURIComponent(currentSubject)}/${encodeURIComponent(currentFeature)}/${currentChapter}`);
-                const data = await response.json();
-
-                if (data.success && data.content) {
-                    if (data.content.content_type === 'file') {
-                        displayFile(data.content.file_path);
-                    } else {
-                        displayText(data.content.text_content);
-                    }
-                } else {
-                    viewerArea.innerHTML = `
-                        <div style="text-align: center; padding: 3rem;">
-                            <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
-                            <h3 style="color: #FFB347; margin-bottom: 1rem;">No Content Available</h3>
-                            <p style="color: #aaa;">This chapter doesn't have any content yet.</p>
-                            <p style="color: #888; margin-top: 1rem;">Contact your administrator to add study materials.</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error loading content:', error);
-                viewerArea.innerHTML = `
-                    <div style="text-align: center; padding: 3rem;">
-                        <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
-                        <h3 style="color: #ff0000;">Error Loading Content</h3>
+                            <h3 style="color: #ff0000;">Error Loading Content</h3>
                         <p style="color: #aaa;">Please try again later or contact support.</p>
                     </div>
                 `;
@@ -847,7 +695,6 @@
             viewerArea.innerHTML = '';
             adminArea.style.display = 'block';
             
-            // Load existing content if any
             loadExistingContent();
         }
 
@@ -867,7 +714,6 @@
             }
         }
 
-        // Upload functions
         function setUploadMode(mode) {
             uploadMode = mode;
             const fileMode = document.getElementById('fileUploadMode');
@@ -904,7 +750,6 @@
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
 
-        // Drag and drop
         const uploadArea = document.getElementById('uploadArea');
         if (uploadArea) {
             uploadArea.addEventListener('dragover', (e) => {
@@ -1019,7 +864,6 @@
             backToChapters();
         }
 
-        // Admin functions
         function handleEditMode() {
             document.getElementById('passwordOverlay').classList.add('active');
         }
@@ -1058,7 +902,6 @@
             document.getElementById('passwordInput').value = '';
         }
 
-        // Notification system
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -1075,10 +918,231 @@
             }, 3000);
         }
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             console.log('V.T.C.S Exams System Ready');
         });
     </script>
 </body>
-</html>
+</html>style="color: #FFB347; margin-bottom: 0.5rem;">Upload Study Material</h3>
+                            <p style="color: #aaa;">Click to select or drag and drop files here</p>
+                            <p style="color: #888; font-size: 0.9rem; margin-top: 0.5rem;">Supported: PDF, DOC, DOCX, TXT, Images (Max 50MB)</p>
+                        </div>
+                        <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg" onchange="handleFileSelect(event)">
+                        <div id="fileInfo" style="display: none; margin-top: 1rem; padding: 1rem; background: #0d0d0d; border: 2px solid #FF8C00; border-radius: 8px;">
+                            <p style="color: #FFB347;">Selected: <span id="fileName"></span></p>
+                            <p style="color: #aaa;">Size: <span id="fileSize"></span></p>
+                        </div>
+                    </div>
+
+                    <div id="textUploadMode" style="display: none;">
+                        <textarea id="textEditor" class="text-editor" placeholder="Write your notes here...&#10;&#10;You can include:&#10;- Definitions&#10;- Formulas&#10;- Examples&#10;- Important points&#10;- Step-by-step solutions"></textarea>
+                    </div>
+
+                    <div class="admin-controls">
+                        <button class="upload-btn" onclick="uploadContent()">💾 Save & Upload</button>
+                        <button class="back-btn" onclick="cancelUpload()">❌ Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentSubject = '';
+        let currentFeature = '';
+        let currentChapter = 0;
+        let isEditMode = false;
+        let selectedFile = null;
+        let uploadMode = 'file';
+
+        const chapterConfig = {
+            'Mathematics': {
+                'Important Questions': 16,
+                'PYQs': 16,
+                'Worksheets': 16,
+                'Premium Handwritten Notes': 16
+            },
+            'Physics': {
+                'Important Questions': 5,
+                'PYQs': 5,
+                'Worksheets': 5,
+                'Premium Handwritten Notes': 5
+            },
+            'Chemistry': {
+                'Important Questions': 5,
+                'PYQs': 5,
+                'Worksheets': 5,
+                'Premium Handwritten Notes': 5
+            },
+            'Biology': {
+                'Important Questions': 5,
+                'PYQs': 5,
+                'Worksheets': 5,
+                'Premium Handwritten Notes': 5
+            },
+            'Political Science': {
+                'Important Questions': 10,
+                'PYQs': 10,
+                'Worksheets': 10,
+                'Premium Handwritten Notes': 10
+            },
+            'Economics': {
+                'Important Questions': 10,
+                'PYQs': 10,
+                'Worksheets': 10,
+                'Premium Handwritten Notes': 10
+            },
+            'Geography': {
+                'Important Questions': 10,
+                'PYQs': 10,
+                'Worksheets': 10,
+                'Premium Handwritten Notes': 10
+            },
+            'History': {
+                'Important Questions': 10,
+                'PYQs': 10,
+                'Worksheets': 10,
+                'Premium Handwritten Notes': 10
+            },
+            'Hindi': {
+                'Important Questions': 15,
+                'PYQs': 15,
+                'Worksheets': 15,
+                'Premium Handwritten Notes': 15
+            },
+            'English': {
+                'Important Questions': 15,
+                'PYQs': 15,
+                'Worksheets': 15,
+                'Premium Handwritten Notes': 15
+            },
+            'AI': {
+                'Important Questions': 10,
+                'PYQs': 10,
+                'Worksheets': 10,
+                'Premium Handwritten Notes': 10
+            }
+        };
+
+        // Navigation functions
+        function showSubjects() {
+            document.getElementById('subjectsView').classList.add('active');
+            document.getElementById('featuresView').classList.remove('active');
+            document.getElementById('chaptersView').classList.remove('active');
+            document.getElementById('contentView').classList.remove('active');
+            document.getElementById('breadcrumb').innerHTML = '<span onclick="showSubjects()">Home</span>';
+        }
+
+        function showFeatures(subject) {
+            currentSubject = subject;
+            document.getElementById('subjectsView').classList.remove('active');
+            document.getElementById('featuresView').classList.add('active');
+            document.getElementById('chaptersView').classList.remove('active');
+            document.getElementById('contentView').classList.remove('active');
+            document.getElementById('subjectTitle').textContent = subject;
+            document.getElementById('breadcrumb').innerHTML = `
+                <span onclick="showSubjects()">Home</span> > <span>${subject}</span>
+            `;
+        }
+
+        async function showChapters(feature) {
+            currentFeature = feature;
+            document.getElementById('featuresView').classList.remove('active');
+            document.getElementById('chaptersView').classList.add('active');
+            document.getElementById('contentView').classList.remove('active');
+            document.getElementById('featureTitle').textContent = feature;
+            document.getElementById('chapterSubtitle').textContent = `${currentSubject} - Select a chapter`;
+            document.getElementById('breadcrumb').innerHTML = `
+                <span onclick="showSubjects()">Home</span> > 
+                <span onclick="showFeatures('${currentSubject}')">${currentSubject}</span> > 
+                <span>${feature}</span>
+            `;
+
+            const chaptersGrid = document.getElementById('chaptersGrid');
+            chaptersGrid.innerHTML = '';
+            
+            const numChapters = chapterConfig[currentSubject]?.[feature] || 10;
+            
+            for (let i = 1; i <= numChapters; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'chapter-btn';
+                btn.textContent = `Chapter ${i}`;
+                
+                const hasContent = await checkContentExists(currentSubject, feature, i);
+                if (hasContent) {
+                    btn.classList.add('has-content');
+                }
+                
+                btn.onclick = () => viewChapter(i);
+                chaptersGrid.appendChild(btn);
+            }
+        }
+
+        async function viewChapter(chapter) {
+            currentChapter = chapter;
+            document.getElementById('chaptersView').classList.remove('active');
+            document.getElementById('contentView').classList.add('active');
+            document.getElementById('contentTitle').textContent = `${currentSubject} - ${currentFeature} - Chapter ${chapter}`;
+            document.getElementById('breadcrumb').innerHTML = `
+                <span onclick="showSubjects()">Home</span> > 
+                <span onclick="showFeatures('${currentSubject}')">${currentSubject}</span> > 
+                <span onclick="showChapters('${currentFeature}')">${currentFeature}</span> >
+                <span>Chapter ${chapter}</span>
+            `;
+
+            if (isEditMode) {
+                showUploadInterface();
+            } else {
+                await loadContent();
+            }
+        }
+
+        function backToChapters() {
+            showChapters(currentFeature);
+        }
+
+        async function checkContentExists(subject, feature, chapter) {
+            try {
+                const response = await fetch(`${API_URL}/content/${encodeURIComponent(subject)}/${encodeURIComponent(feature)}/${chapter}`);
+                const data = await response.json();
+                return data.success;
+            } catch (error) {
+                console.error('Error checking content:', error);
+                return false;
+            }
+        }
+
+        async function loadContent() {
+            const viewerArea = document.getElementById('viewerArea');
+            const adminArea = document.getElementById('adminUploadArea');
+            
+            viewerArea.innerHTML = '<p style="color: #aaa; text-align: center; padding: 2rem;">Loading content...</p>';
+            adminArea.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/content/${encodeURIComponent(currentSubject)}/${encodeURIComponent(currentFeature)}/${currentChapter}`);
+                const data = await response.json();
+
+                if (data.success && data.content) {
+                    if (data.content.content_type === 'file') {
+                        displayFile(data.content.file_path);
+                    } else {
+                        displayText(data.content.text_content);
+                    }
+                } else {
+                    viewerArea.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+                            <h3 style="color: #FFB347; margin-bottom: 1rem;">No Content Available</h3>
+                            <p style="color: #aaa;">This chapter doesn't have any content yet.</p>
+                            <p style="color: #888; margin-top: 1rem;">Contact your administrator to add study materials.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading content:', error);
+                viewerArea.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+                        <h3
