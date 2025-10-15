@@ -1,0 +1,4 @@
+node_modules/
+   vtcs_exams.db
+   .env
+   *.log
