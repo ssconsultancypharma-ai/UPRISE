@@ -1,0 +1,52 @@
+type User @table {
+  username: String!
+  email: String!
+  createdAt: Timestamp!
+  displayName: String
+  profilePictureURL: String
+}
+
+type Subject @table {
+  name: String!
+  description: String
+}
+
+type Chapter @table {
+  name: String!
+  chapterNumber: Int!
+  description: String
+  subject: Subject
+}
+
+type Note @table {
+  title: String!
+  content: String!
+  createdAt: Timestamp!
+  tags: [String]
+  chapter: Chapter
+  subject: Subject
+}
+
+type Question @table {
+  questionText: String!
+  difficultyLevel: String!
+  createdAt: Timestamp!
+  solutionText: String
+  hintText: String
+  chapter: Chapter
+  subject: Subject
+}
+
+type UserProgress @table(key: ["user", "chapter"]) {
+  user: User!
+  chapter: Chapter!
+  isCompleted: Boolean!
+  completedAt: Timestamp!
+}
+
+type UserFavorite @table {
+  user: User!
+  itemType: String!
+  itemId: UUID!
+  favoritedAt: Timestamp!
+}

@@ -272,4 +272,22 @@ process.on('SIGINT', () => {
         console.log('\nDatabase connection closed');
         process.exit(0);
     });
-});
+}); 
+
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// CORS Configuration
+app.use(cors({
+    origin: [
+        'https://uprise-git-main-ssconsultancypharma-ais-projects.vercel.app',
+        'http://localhost:3000',
+        'http://localhost:5500'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Your other middleware and routes...
