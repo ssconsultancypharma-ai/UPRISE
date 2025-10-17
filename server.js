@@ -6,14 +6,23 @@ const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+// CORS Configuration - Updated to include all necessary origins
+app.use(cors({
+    origin: [
+        'https://uprise-git-main-ssconsultancypharma-ais-projects.vercel.app',
+        'https://uprise-8vgb.onrender.com',
+        'http://localhost:3000',
+        'http://localhost:5500',
+        '*'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Middleware
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'DELETE'],
-    allowedHeaders: ['Content-Type']
-}));
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
@@ -91,6 +100,11 @@ const upload = multer({
 });
 
 // API Routes
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ success: true, message: 'Server is running' });
+});
 
 // Verify admin password
 app.post('/api/verify-password', (req, res) => {
@@ -258,7 +272,7 @@ app.get('/download/:filename', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
     console.log('Default admin password: admin123');
     console.log('IMPORTANT: Change the password immediately after first login!');
 });
@@ -272,22 +286,4 @@ process.on('SIGINT', () => {
         console.log('\nDatabase connection closed');
         process.exit(0);
     });
-}); 
-
-const express = require('express');
-const cors = require('cors');
-const app = express();
-
-// CORS Configuration
-app.use(cors({
-    origin: [
-        'https://uprise-git-main-ssconsultancypharma-ais-projects.vercel.app',
-        'http://localhost:3000',
-        'http://localhost:5500'
-    ],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Your other middleware and routes...
+});
